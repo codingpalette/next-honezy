@@ -1,3 +1,5 @@
+'use server'
+
 import { channels, db } from "@/src/shared/lib";
 import { MainLayou } from "@/src/shared/ui";
 import { BentoItems, ChzzkClips, YoutubeVideo } from "@/src/widgets/main";

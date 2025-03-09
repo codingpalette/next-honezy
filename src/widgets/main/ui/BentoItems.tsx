@@ -2,6 +2,7 @@
 
 import { postYoutubeVideos } from "@/src/entities/youtube";
 import Image from "next/image";
+import { useEffect } from "react";
 
 interface BentoItemsProps {
   channelsWithLive: {
@@ -37,6 +38,12 @@ export function BentoItems({ channelsWithLive }: BentoItemsProps) {
     card.style.transition = "transform 0.5s ease-out";
     card.style.transform = "perspective(1000px) rotateX(0deg) rotateY(0deg)";
   };
+
+
+  useEffect(() => {
+    console.log('channelsWithLive', channelsWithLive)
+
+  }, [channelsWithLive])
 
 
   const onClickEvent = async () => {
