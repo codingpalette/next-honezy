@@ -94,7 +94,7 @@ export function BentoItems({ channelsWithLive }: BentoItemsProps) {
                           <Image src={`/${channel.image}`} width={36} height={36} alt={channel.name} />
                         </div>
                       </div>
-                      <span>{channel.name}</span>
+                      <span className="font-bold">{channel.name}</span>
                     </div>
                     <span className="text-xs font-bold">{channel.openLive ? "온라인" : "오프라인"}</span>
                   </a>

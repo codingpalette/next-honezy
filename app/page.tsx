@@ -23,6 +23,7 @@ export default async function Home() {
             'User-Agent': 'NextApp',
             'Accept': 'application/json'
           },
+          cache: 'no-cache',
         });
         if (!res.ok) {
           throw new Error(`HTTP error! status: ${res.status}`);
@@ -35,19 +36,6 @@ export default async function Home() {
       }
     })
   );
-
-
-  // console.log("channelsWithLive", channelsWithLive);
-  // const honeychurros = await db.youtube_videos.findMany({
-  //   where: {
-  //     channel_id: 'UCkQFRBUPh5mcF1kca4f_DvQ'
-  //   },
-  //   orderBy: {
-  //     published_at: 'desc'
-  //   },
-  //   take: 12
-  // })
-
 
   return (
     <>
