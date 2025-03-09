@@ -1,0 +1,39 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model members {
+  id         BigInt   @id @default(autoincrement())
+  name       String   @db.VarChar
+  youtube_id String   @unique @db.VarChar
+  chzzk_id   String   @unique @db.VarChar
+  created_at DateTime @db.Timestamp(6)
+  updated_at DateTime @db.Timestamp(6)
+
+  youtube_videos youtube_videos[]
+}
+
+model youtube_videos {
+  id                     BigInt    @id @default(autoincrement())
+  video_id               String    @unique
+  kind                   String?
+  etag                   String?
+  published_at           DateTime?
+  channel_id             String // Member.youtube_id 를 참조합니다.
+  title                  String?
+  description            String?
+  thumbnails             Json?
+  channel_title          String?
+  live_broadcast_content String?
+  publish_time           DateTime?
+  created_at             DateTime  @default(now())
+  updated_at             DateTime  @updatedAt
+
+  // 관계 설정: channel_id 필드가 Member의 youtube_id를 참조함.
+  members members @relation(fields: [channel_id], references: [youtube_id])
+}
