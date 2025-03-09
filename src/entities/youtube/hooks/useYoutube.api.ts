@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { getYoutubeVideos } from "../api/youtube.api";
+import { getYoutubeMusic, getYoutubeVideos } from "../api/youtube.api";
 import { youtube_videos } from "@prisma/client";
 
 
@@ -17,4 +17,12 @@ export function useGetYoutubeVideos({ channel_id, initialData }: useGetYoutubeVi
     // initialData
   })
 
+}
+
+
+export function useGetYoutubeMusic({ channel_id }: { channel_id?: string }) {
+  return useQuery({
+    queryKey: ["youtubeMusic", channel_id],
+    queryFn: () => getYoutubeMusic({ channel_id }),
+  })
 }

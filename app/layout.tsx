@@ -1,6 +1,7 @@
+
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
-import { GoogleAnalytics } from '@next/third-parties/google'
+import { GoogleAnalytics } from '@next/third-parties/google';
 import "./globals.css";
 import { TanstackProvider } from "@/src/app/providers";
 
@@ -21,8 +22,6 @@ export const metadata: Metadata = {
   icons: {
     icon: "/honeyz.webp"
   }
-
-
 };
 
 export default function RootLayout({
@@ -31,7 +30,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="ko" className="bg-gray-50" data-theme="light">
+    <html lang="ko" data-theme="light">
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
         <TanstackProvider>
           {children}

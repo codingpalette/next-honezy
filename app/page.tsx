@@ -40,7 +40,6 @@ export default async function Home() {
   return (
     <>
       <MainLayou>
-        <div className="mt-20" />
         <BentoItems channelsWithLive={channelsWithLive} />
         <YoutubeVideo channel_id="UCkQFRBUPh5mcF1kca4f_DvQ" />
         <ChzzkClips channel_id="c0d9723cbb75dc223c6aa8a9d4f56002" />

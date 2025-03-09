@@ -86,7 +86,7 @@ export function BentoItems({ channelsWithLive }: BentoItemsProps) {
                   <a
                     href={`https://chzzk.naver.com/live/${channel.chzzk_id}`}
                     target="_blank"
-                    className="flex gap-2 items-center justify-between w-full bg-gray-200 rounded-md py-1 px-2 font-medium"
+                    className="flex gap-2 items-center justify-between w-full bg-gray-200 dark:bg-gray-800 rounded-md py-1 px-2 font-medium"
                   >
                     <div className="flex gap-4 items-center">
                       <div className={`avatar ${channel.openLive ? "avatar-online" : "avatar-offline"}`}>
@@ -94,15 +94,18 @@ export function BentoItems({ channelsWithLive }: BentoItemsProps) {
                           <Image src={`/${channel.image}`} width={36} height={36} alt={channel.name} />
                         </div>
                       </div>
-                      <span className="font-bold">{channel.name}</span>
+                      <span className="font-bold dark:text-white">{channel.name}</span>
                     </div>
-                    <span className="text-xs font-bold">{channel.openLive ? "온라인" : "오프라인"}</span>
+                    <span className="text-xs font-bold dark:text-white">
+                      {channel.openLive ? "온라인" : "오프라인"}
+                    </span>
                   </a>
                 </li>
               ))}
             </ul>
           </div>
         </div>
+
 
         {/* 두 번째 카드에 마우스 이벤트 적용 */}
         <div
