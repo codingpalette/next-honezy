@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import { GoogleAnalytics } from '@next/third-parties/google'
 import "./globals.css";
 import { TanstackProvider } from "@/src/app/providers";
 
@@ -35,6 +36,7 @@ export default function RootLayout({
         <TanstackProvider>
           {children}
         </TanstackProvider>
+        <GoogleAnalytics gaId="G-4KZV4L3ECY" />
       </body>
     </html>
   );
