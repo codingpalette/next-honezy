@@ -37,6 +37,9 @@ export default async function Home() {
     })
   );
 
+
+  console.log('start', channelsWithLive)
+
   return (
     <>
       <MainLayou>

@@ -77,6 +77,9 @@ export async function getYoutubeMusic({ channel_id }: { channel_id?: string }) {
   const musics = await db.youtube_music.findMany({
     // channel_id가 주어지면, members 관계에서 youtube_id가 channel_id인 레코드가 있는지 확인합니다.
     where: channel_id ? { members: { some: { youtube_id: channel_id } } } : {},
+    orderBy: {
+      created_at: "desc",
+    },
     include: { members: true }, // 선택사항: 관계된 멤버 정보 포함
   });
   console.log(musics)
