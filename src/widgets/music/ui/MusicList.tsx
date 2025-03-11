@@ -12,7 +12,7 @@ export function MusicList() {
 
   const [selectedMember, setSelectedMember] = useState('')
 
-  const { data } = useGetYoutubeMusic({ channel_id: selectedMember })
+  const { data, isLoading } = useGetYoutubeMusic({ channel_id: selectedMember })
 
 
 
