@@ -24,12 +24,21 @@ export function MainLayou({ children }: { children: React.ReactNode }) {
 
   return (
     <>
-      <div className="navbar bg-base-100 shadow-sm sticky left-0 top-0 z-30">
+      <header className="navbar bg-base-100 shadow-sm sticky left-0 top-0 z-30">
         <div className="flex justify-between items-center w-full">
           <Link href="/">
             <Image src="/honeyz-logo.png" width={50} height={50} alt="허니즈로그" />
           </Link>
-          <div>
+          <div className="flex items-center gap-4">
+            <div className="flex-none">
+              <ul className="menu menu-horizontal px-1">
+                <li>
+                  <Link href="/music">
+                    MUSIC
+                  </Link>
+                </li>
+              </ul>
+            </div>
             <label className="swap swap-rotate cursor-pointer">
               <input
                 type="checkbox"
@@ -55,7 +64,7 @@ export function MainLayou({ children }: { children: React.ReactNode }) {
             </label>
           </div>
         </div>
-      </div>
+      </header>
       <div className="mx-auto max-w-2xl px-4 lg:max-w-7xl lg:px-8 pb-12 mt-4">
         {children}
       </div>
