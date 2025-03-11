@@ -1,7 +1,7 @@
-
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
-import { GoogleAnalytics } from '@next/third-parties/google';
+import { GoogleAnalytics } from "@next/third-parties/google";
+import Head from "next/head"; // next/head 임포트
 import "./globals.css";
 import { TanstackProvider } from "@/src/app/providers";
 
@@ -20,8 +20,8 @@ export const metadata: Metadata = {
   description: "허니즈의 다양한 정보를 확인해 보세요",
   keywords: "허니츄러스, 아야, 담유이, 디디디용, 오화요, 망내, 허니즈, 허니즈로그",
   icons: {
-    icon: "/honeyz.webp"
-  }
+    icon: "/honeyz.webp",
+  },
 };
 
 export default function RootLayout({
@@ -30,7 +30,17 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="ko" data-theme="light">
+    <html lang="ko">
+      <Head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              const theme = localStorage.getItem("theme") || "light";
+              document.documentElement.setAttribute("data-theme", theme);
+            `,
+          }}
+        />
+      </Head>
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
         <TanstackProvider>
           {children}

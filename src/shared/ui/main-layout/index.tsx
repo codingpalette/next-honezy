@@ -1,26 +1,14 @@
-
 'use client'
 
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { themeChange } from "theme-change";
 
 export function MainLayou({ children }: { children: React.ReactNode }) {
-  const [theme, setTheme] = useState("light");
-
   useEffect(() => {
-    // data-theme 속성과 함께 html 태그에 dark 클래스를 light/dark에 맞게 설정
-    document.documentElement.setAttribute("data-theme", theme);
-    if (theme === "dark") {
-      document.documentElement.classList.add("dark");
-    } else {
-      document.documentElement.classList.remove("dark");
-    }
-  }, [theme]);
-
-  const toggleTheme = () => {
-    setTheme((prev) => (prev === "light" ? "dark" : "light"));
-  };
+    themeChange(false); // React 프로젝트에서는 false를 전달해야 함
+  }, []);
 
   return (
     <>
@@ -33,29 +21,28 @@ export function MainLayou({ children }: { children: React.ReactNode }) {
             <div className="flex-none">
               <ul className="menu menu-horizontal px-1">
                 <li>
-                  <Link href="/music">
-                    MUSIC
-                  </Link>
+                  <Link href="/music">MUSIC</Link>
                 </li>
               </ul>
             </div>
             <label className="swap swap-rotate cursor-pointer">
+              {/* data-toggle-theme 속성으로 light와 dark 테마 토글 */}
               <input
                 type="checkbox"
-                onChange={toggleTheme}
-                checked={theme === "dark"}
+                data-toggle-theme="light,dark"
+                data-act-class="active"
               />
-              {/* sun icon: swap-on은 체크됐을 때 보이며, light 모드에서는 보이지 않아야 합니다 */}
+              {/* sun icon: light 모드에서 보임 */}
               <svg
-                className="swap-on h-6 w-6 fill-current"
+                className="swap-off h-6 w-6 fill-current"
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 24 24"
               >
                 <path d="M5.64,17l-.71.71a1,1,0,0,0,0,1.41,1,1,0,0,0,1.41,0l.71-.71A1,1,0,0,0,5.64,17ZM5,12a1,1,0,0,0-1-1H3a1,1,0,0,0,0,2H4A1,1,0,0,0,5,12Zm7-7a1,1,0,0,0,1-1V3a1,1,0,0,0-2,0V4A1,1,0,0,0,12,5ZM5.64,7.05a1,1,0,0,0,.7.29,1,1,0,0,0,.71-.29,1,1,0,0,0,0-1.41l-.71-.71A1,1,0,0,0,4.93,6.34Zm12,.29a1,1,0,0,0,.7-.29l.71-.71a1,1,0,1,0-1.41-1.41L17,5.64a1,1,0,0,0,0,1.41A1,1,0,0,0,17.66,7.34ZM21,11H20a1,1,0,0,0,0,2h1a1,1,0,0,0,0-2Zm-9,8a1,1,0,0,0-1,1v1a1,1,0,0,0,2,0V20A1,1,0,0,0,12,19ZM18.36,17A1,1,0,0,0,17,18.36l.71.71a1,1,0,0,0,1.41,0,1,1,0,0,0,0-1.41ZM12,6.5A5.5,5.5,0,1,0,17.5,12,5.51,5.51,0,0,0,12,6.5Zm0,9A3.5,3.5,0,1,1,15.5,12,3.5,3.5,0,0,1,12,15.5Z" />
               </svg>
-              {/* moon icon: swap-off은 체크 안 됐을 때 보이며, dark 모드일 때 보이지 않아야 합니다 */}
+              {/* moon icon: dark 모드에서 보임 */}
               <svg
-                className="swap-off h-6 w-6 fill-current"
+                className="swap-on h-6 w-6 fill-current"
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 24 24"
               >
