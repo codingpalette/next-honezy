@@ -1,18 +1,13 @@
-'use server'
 
 import { channels, db } from "@/src/shared/lib";
 import { MainLayou } from "@/src/shared/ui";
 import { BentoItems, ChzzkClips, YoutubeVideo } from "@/src/widgets/main";
 import Image from "next/image";
-// import styles from "./page.module.css";
+
+// 페이지가 동적으로 렌더링되도록 강제
+export const dynamic = "force-dynamic";
 
 export default async function Home() {
-
-
-
-  // 모든 채널에 대해 비동기로 API 호출 후 openLive 결과를 채널 객체에 추가
-
-
   const channelsWithLive = await Promise.all(
     channels.map(async (channel) => {
       const url = `https://api.chzzk.naver.com/service/v1/channels/${channel.chzzk_id}`;
@@ -23,7 +18,8 @@ export default async function Home() {
             'User-Agent': 'NextApp',
             'Accept': 'application/json'
           },
-          cache: 'no-cache',
+          cache: 'no-cache', // 여전히 동적 데이터를 가져옴
+          // next: { revalidate: 3600 }, // 1시간마다 데이터 갱신
         });
         if (!res.ok) {
           throw new Error(`HTTP error! status: ${res.status}`);
@@ -38,8 +34,6 @@ export default async function Home() {
   );
 
 
-  console.log('start', channelsWithLive)
-
   return (
     <>
       <MainLayou>
@@ -50,3 +44,4 @@ export default async function Home() {
     </>
   );
 }
+
