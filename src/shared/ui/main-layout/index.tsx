@@ -12,7 +12,7 @@ export function MainLayou({ children }: { children: React.ReactNode }) {
 
   return (
     <>
-      <header className="navbar bg-base-100 shadow-sm sticky left-0 top-0 z-30">
+      <header className="navbar bg-base-100 shadow-sm sticky left-0 top-0 z-40">
         <div className="flex justify-between items-center w-full">
           <Link href="/">
             <Image src="/honeyz-logo.png" width={50} height={50} alt="허니즈로그" />
