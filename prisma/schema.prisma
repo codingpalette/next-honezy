@@ -12,11 +12,13 @@ model members {
   name       String   @db.VarChar
   youtube_id String   @unique @db.VarChar
   chzzk_id   String   @unique @db.VarChar
+  color      String?  @db.VarChar
   created_at DateTime @db.Timestamp(6)
   updated_at DateTime @db.Timestamp(6)
 
   youtube_videos youtube_videos[]
   youtube_music  youtube_music[]
+  schedules      schedule[] // members -> schedule 관계 추가
 }
 
 model youtube_videos {
@@ -40,14 +42,27 @@ model youtube_videos {
 }
 
 model youtube_music {
-  id          BigInt @id @default(autoincrement())
-  title       String
-  link        String
-  time        String
-  thumbnail   String
+  id        BigInt @id @default(autoincrement())
+  title     String
+  link      String
+  time      String
+  thumbnail String
 
   // 필요한 경우 URL, duration 등 다른 필드를 추가할 수 있습니다.
   members    members[] // members와 many-to-many 관계 (implicit join table 생성됨)
   created_at DateTime  @default(now())
   updated_at DateTime  @updatedAt
+}
+
+model schedule {
+  id         BigInt   @id @default(autoincrement())
+  title      String   @db.VarChar
+  subtitle   String?  @db.VarChar
+  time       String   @db.VarChar // "HH:MM" 형식으로 저장
+  date       DateTime @db.Date // "YYYY-MM-DD" 형식
+  member_id  BigInt // members.id를 참조
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  member members @relation(fields: [member_id], references: [id])
 }

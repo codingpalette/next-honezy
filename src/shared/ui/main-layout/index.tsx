@@ -23,6 +23,9 @@ export function MainLayou({ children }: { children: React.ReactNode }) {
                 <li>
                   <Link href="/music">MUSIC</Link>
                 </li>
+                <li>
+                  <Link href="/schedule">SCHEDULE</Link>
+                </li>
               </ul>
             </div>
             <label className="swap swap-rotate cursor-pointer">
@@ -52,7 +55,7 @@ export function MainLayou({ children }: { children: React.ReactNode }) {
           </div>
         </div>
       </header>
-      <div className="mx-auto max-w-2xl px-4 lg:max-w-7xl lg:px-8 pb-12 mt-4">
+      <div className="mx-auto px-4 lg:max-w-7xl lg:px-8 pb-12 mt-4">
         {children}
       </div>
     </>

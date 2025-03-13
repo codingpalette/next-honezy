@@ -11,7 +11,7 @@ export function MusicList() {
 
   return (
     <>
-      <div className="mt-10">
+      <div className="">
         {/* 멤버 선택 버튼 */}
         <ul className="flex gap-4 items-center flex-wrap">
           <li>
