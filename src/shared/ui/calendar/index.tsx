@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, Fragment } from "react";
 import dayjs from "dayjs";
 import "dayjs/locale/ko";
 import { ChevronLeft, ChevronRight } from "lucide-react";
@@ -14,6 +14,7 @@ interface CalendarEvent {
   member_id: number;
   subtitle: string | null;
   time: string;
+  video_link: string | null;
 }
 
 interface CalendarProps {
@@ -162,21 +163,40 @@ export function Calendar({
                               }
 
                               return (
-                                <div
-                                  key={event.id}
-                                  onClick={(e) => {
-                                    e.stopPropagation();
-                                    onEventClick?.(event, day.date);
-                                  }}
-                                  className={`text-xs  p-1 rounded font-semibold ${onEventClick ? "cursor-pointer hover:opacity-80" : ""
-                                    }`}
-                                  style={{
-                                    backgroundColor: event.member.color || "#e5e7eb", // 기본값: gray-200
-                                    color: color, // 텍스트 색상 (어두운 배경 대비)
-                                  }}
-                                >
-                                  {`${event.member.name}:${event.title} - ${event.time}`}
-                                </div>
+                                <Fragment key={event.id}>
+                                  {event.video_link ? (
+                                    <>
+                                      <a
+                                        href={event.video_link}
+                                        target="_blank"
+                                        className={`text-xs  p-1 rounded font-semibold hover:opacity-80}`}
+                                        style={{
+                                          backgroundColor: event.member.color || "#e5e7eb", // 기본값: gray-200
+                                          color: color, // 텍스트 색상 (어두운 배경 대비)
+                                        }}
+                                      >
+                                        {`${event.member.name}:${event.title} - ${event.time}`}
+
+                                      </a>
+
+                                    </>
+
+                                  ) : (
+                                    <>
+                                      <div
+                                        className={`text-xs  p-1 rounded font-semibold ${onEventClick ? "cursor-pointer hover:opacity-80" : ""
+                                          }`}
+                                        style={{
+                                          backgroundColor: event.member.color || "#e5e7eb", // 기본값: gray-200
+                                          color: color, // 텍스트 색상 (어두운 배경 대비)
+                                        }}
+                                      >
+                                        {`${event.member.name}:${event.title} - ${event.time}`}
+                                      </div>
+
+                                    </>
+                                  )}
+                                </Fragment>
 
                               )
                             }

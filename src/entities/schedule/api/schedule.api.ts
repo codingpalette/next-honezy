@@ -16,6 +16,7 @@ interface CalendarEvent {
   member_id: number;
   subtitle: string | null;
   time: string;
+  video_link: string | null;
 }
 
 export async function getScheduleList({ date }: { date: string }) {
@@ -40,7 +41,7 @@ export async function getScheduleList({ date }: { date: string }) {
       member: true, // 멤버 정보 포함
     },
     orderBy: {
-      date: "asc", // 날짜순 정렬
+      time: "asc",
     },
   });
 
@@ -57,6 +58,7 @@ export async function getScheduleList({ date }: { date: string }) {
       member_id: Number(s.member_id), // BigInt -> number
       subtitle: s.subtitle,
       time: s.time,
+      video_link: s.video_link,
     });
     return acc;
   }, {});

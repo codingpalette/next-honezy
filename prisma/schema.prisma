@@ -61,6 +61,8 @@ model schedule {
   time       String   @db.VarChar // "HH:MM" 형식으로 저장
   date       DateTime @db.Date // "YYYY-MM-DD" 형식
   member_id  BigInt // members.id를 참조
+  video_link String?  @db.VarChar
+
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
 
