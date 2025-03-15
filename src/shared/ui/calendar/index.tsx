@@ -49,6 +49,7 @@ export function Calendar({
 
   useEffect(() => {
     if (data) {
+      console.log(dayjs().format("YYYY-MM-DD"));
       setEvents(data);
     }
   }, [data])
