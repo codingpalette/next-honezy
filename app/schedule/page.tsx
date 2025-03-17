@@ -5,7 +5,7 @@ import dayjs from "dayjs";
 
 import { Metadata, ResolvingMetadata } from "next";
 
-
+export const dynamic = "force-dynamic"; // 캐시 없이 항상 최신 데이터 가져오기
 
 export async function generateMetadata(): Promise<Metadata> {
   return {
