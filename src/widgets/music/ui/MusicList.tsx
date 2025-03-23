@@ -12,7 +12,6 @@ export function MusicList() {
   const [selectedMember, setSelectedMember] = useState('');
   const { data, isLoading } = useGetYoutubeMusic({ channel_id: selectedMember });
 
-  // 재생 관련 상태
   const [playingMusic, setPlayingMusic] = useState<null | youtube_music>(null);
   const [playing, setPlaying] = useState(false);
   const [progress, setProgress] = useState(0);
@@ -138,54 +137,57 @@ export function MusicList() {
 
       {/* 음악 재생 바 */}
       {playingMusic && (
-        <div className="fixed bottom-0 left-0 right-0 bg-base-200 p-2 shadow-lg">
-          <div className="flex items-center gap-4">
-            <div className="size-12 rounded-box overflow-hidden">
+        <div className="fixed bottom-0 left-0 right-0 bg-base-200 p-2 shadow-lg z-50">
+          <div className="flex items-center gap-2 sm:gap-4 max-w-screen-xl mx-auto">
+            {/* 썸네일 */}
+            <div className="size-10 sm:size-12 rounded-box overflow-hidden flex-shrink-0">
               <img
                 className="object-cover w-full h-full"
                 src={playingMusic.thumbnail}
                 alt={playingMusic.title}
               />
             </div>
-            <div className="flex-1">
-              <div className="text-sm font-semibold truncate">{playingMusic.title}</div>
+            {/* 제목 */}
+            <div className="flex-1 min-w-0">
+              <div className="text-xs sm:text-sm font-semibold truncate">{playingMusic.title}</div>
               <div className="text-xs opacity-60">{playingMusic.time}</div>
             </div>
-            <div className="flex items-center gap-2">
-              <button className="btn btn-ghost btn-circle" onClick={() => setPlaying(!playing)}>
+            {/* 재생 컨트롤 */}
+            <div className="flex items-center gap-1 sm:gap-2 flex-shrink-0">
+              <button className="btn btn-ghost btn-circle btn-sm sm:btn-md" onClick={() => setPlaying(!playing)}>
                 {playing ? (
-                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-5 sm:size-6">
                     <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 5.25v13.5m-7.5-13.5v13.5" />
                   </svg>
                 ) : (
-                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-5 sm:size-6">
                     <path strokeLinecap="round" strokeLinejoin="round" d="M5.25 5.653c0-.856.917-1.398 1.667-.986l11.54 6.347a1.125 1.125 0 0 1 0 1.972l-11.54 6.347a1.125 1.125 0 0 1-1.667-.986V5.653Z" />
                   </svg>
                 )}
               </button>
             </div>
-            <div className="flex-1">
-              <div className="flex items-center gap-2">
-                <span className="text-xs">{formatTime(progress)}</span>
-                <input
-                  type="range"
-                  min={0}
-                  max={duration}
-                  value={progress}
-                  onChange={(e) => {
-                    const newTime = Number(e.target.value);
-                    setProgress(newTime);
-                    if (playerRef.current) {
-                      playerRef.current.seekTo(newTime);
-                    }
-                  }}
-                  className="range range-primary range-xs flex-1"
-                />
-                <span className="text-xs">{formatTime(duration)}</span>
-              </div>
+            {/* 진행 바 */}
+            <div className="flex-1 hidden sm:flex items-center gap-2">
+              <span className="text-xs">{formatTime(progress)}</span>
+              <input
+                type="range"
+                min={0}
+                max={duration}
+                value={progress}
+                onChange={(e) => {
+                  const newTime = Number(e.target.value);
+                  setProgress(newTime);
+                  if (playerRef.current) {
+                    playerRef.current.seekTo(newTime);
+                  }
+                }}
+                className="range range-primary range-xs flex-1"
+              />
+              <span className="text-xs">{formatTime(duration)}</span>
             </div>
-            <button className="btn btn-ghost btn-circle" onClick={() => setPlayingMusic(null)}>
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
+            {/* 숨김 버튼 */}
+            <button className="btn btn-ghost btn-circle btn-sm sm:btn-md flex-shrink-0" onClick={() => setPlayingMusic(null)}>
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-5 sm:size-6">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
               </svg>
             </button>
