@@ -1,4 +1,3 @@
-// src/widgets/music/ui/MusicList.tsx
 'use client';
 
 import { useGetYoutubeMusic } from "@/src/entities/youtube";
@@ -16,7 +15,7 @@ export function MusicList() {
   const [playing, setPlaying] = useState(false);
   const [progress, setProgress] = useState(0);
   const [duration, setDuration] = useState(0);
-  const [muted, setMuted] = useState(true); // 음소거 상태 추가
+  const [muted, setMuted] = useState(false); // 음소거 기본값을 false로 변경
 
   const playerRef = useRef<ReactPlayer>(null);
 
@@ -27,11 +26,10 @@ export function MusicList() {
       setPlayingMusic(music);
       setPlaying(true);
       setProgress(0);
-      setMuted(false); // 재생 시작 시 음소거 해제
+      setMuted(false); // 재생 시 음소거 해제
     }
   };
 
-  // ReactPlayer 준비 완료 시 재생 시작
   const handleReady = () => {
     if (playing && playerRef.current) {
       playerRef.current.seekTo(0); // 처음부터 재생
@@ -51,6 +49,13 @@ export function MusicList() {
     const secs = Math.floor(seconds % 60);
     return `${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
   };
+
+  // 모바일에서 재생 상태를 강제로 동기화
+  useEffect(() => {
+    if (playing && playerRef.current && playingMusic) {
+      playerRef.current.seekTo(0); // 모바일에서 강제로 처음부터 재생 시도
+    }
+  }, [playing, playingMusic]);
 
   return (
     <>
@@ -171,7 +176,6 @@ export function MusicList() {
                   </svg>
                 )}
               </button>
-              {/* 음소거 버튼 */}
               <button className="btn btn-ghost btn-circle btn-sm sm:btn-md" onClick={() => setMuted(!muted)}>
                 {muted ? (
                   <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-5 sm:size-6">
@@ -208,7 +212,6 @@ export function MusicList() {
               </svg>
             </button>
           </div>
-          {/* 플레이어 숨김 처리: display: none 대신 보이지 않지만 렌더링 유지 */}
           <div style={{ position: 'absolute', left: '-9999px', width: 0, height: 0 }}>
             <ReactPlayer
               ref={playerRef}
@@ -219,12 +222,15 @@ export function MusicList() {
               onDuration={handleDuration}
               onEnded={() => setPlaying(false)}
               onReady={handleReady}
-              onError={(e) => console.error("Playback error:", e)}
+              onError={(e) => console.error("Playback error:", e)} // 오류 로그 강화
               width="0"
               height="0"
               config={{
                 youtube: {
-                  playerVars: { playsinline: 1 },
+                  playerVars: {
+                    playsinline: 1, // 인라인 재생 강제
+                    autoplay: 1,    // 자동 재생 시도 (모바일에서는 사용자 상호작용 필요)
+                  },
                 },
               } as any}
             />
