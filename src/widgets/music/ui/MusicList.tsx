@@ -226,7 +226,7 @@ export function MusicList() {
                 youtube: {
                   playerVars: { playsinline: 1 },
                 },
-              }}
+              } as any}
             />
           </div>
         </div>
