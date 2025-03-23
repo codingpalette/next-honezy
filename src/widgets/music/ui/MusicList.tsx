@@ -251,16 +251,12 @@ export function MusicList() {
               onProgress={handleProgress}
               onDuration={handleDuration}
               onEnded={() => setPlaying(false)}
-              onReady={() => {
-                setTimeout(() => {
-                  handleReady()
-                }, 100)
-              }}
+              onReady={handleReady}
               width="0"
               height="0"
               config={{
                 youtube: {
-                  playerVars: { playsinline: 1 },
+                  playerVars: { showinfo: 1 }
                 },
               } as any}
             />
