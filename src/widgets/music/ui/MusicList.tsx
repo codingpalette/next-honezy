@@ -84,6 +84,7 @@ export function MusicList() {
                     <div className="skeleton h-3 w-1/4"></div>
                   </div>
                   <div className="skeleton h-10 w-10 rounded-box"></div>
+                  <div className="skeleton h-10 w-10 rounded-box"></div>
                 </li>
               ))
             ) : (
