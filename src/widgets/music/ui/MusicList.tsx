@@ -243,7 +243,7 @@ export function MusicList() {
             </button>
           </div>
           {/* 플레이어 숨김 처리: display: none 대신 보이지 않지만 렌더링 유지 */}
-          <div style={{ position: 'absolute', left: '-9999px', width: 0, height: 0 }}>
+          <div >
             <ReactPlayer
               ref={playerRef}
               url={playingMusic.link}
@@ -251,9 +251,14 @@ export function MusicList() {
               onProgress={handleProgress}
               onDuration={handleDuration}
               onEnded={() => setPlaying(false)}
-              onReady={handleReady}
-              width="0"
-              height="0"
+              onReady={() => {
+                setTimeout(() => {
+                  handleReady()
+                }, 1000)
+
+              }}
+              width="300"
+              height="150"
               config={{
                 youtube: {
                   playerVars: { playsinline: 1 },
