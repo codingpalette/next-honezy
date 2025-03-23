@@ -29,13 +29,6 @@ export function MusicList() {
     }
   };
 
-  // playingMusic 변경 시 재생 상태 동기화
-  useEffect(() => {
-    if (playingMusic && !playing) {
-      setPlaying(true); // 재생 시작 보장
-    }
-  }, [playingMusic]);
-
   // ReactPlayer 준비 완료 시 재생 시작
   const handleReady = () => {
     if (playing && playerRef.current) {
@@ -161,45 +154,18 @@ export function MusicList() {
               />
             </div>
             <div className="flex-1 min-w-0">
-              <div className="text-xs sm:text-sm font-semibold truncate">
-                {playingMusic.title}
-              </div>
+              <div className="text-xs sm:text-sm font-semibold truncate">{playingMusic.title}</div>
               <div className="text-xs opacity-60">{playingMusic.time}</div>
             </div>
             <div className="flex items-center gap-1 sm:gap-2 flex-shrink-0">
-              <button
-                className="btn btn-ghost btn-circle btn-sm sm:btn-md"
-                onClick={() => setPlaying(!playing)}
-              >
+              <button className="btn btn-ghost btn-circle btn-sm sm:btn-md" onClick={() => setPlaying(!playing)}>
                 {playing ? (
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    strokeWidth={1.5}
-                    stroke="currentColor"
-                    className="size-5 sm:size-6"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d="M15.75 5.25v13.5m-7.5-13.5v13.5"
-                    />
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-5 sm:size-6">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 5.25v13.5m-7.5-13.5v13.5" />
                   </svg>
                 ) : (
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    strokeWidth={1.5}
-                    stroke="currentColor"
-                    className="size-5 sm:size-6"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d="M5.25 5.653c0-.856.917-1.398 1.667-.986l11.54 6.347a1.125 1.125 0 0 1 0 1.972l-11.54 6.347a1.125 1.125 0 0 1-1.667-.986V5.653Z"
-                    />
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-5 sm:size-6">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M5.25 5.653c0-.856.917-1.398 1.667-.986l11.54 6.347a1.125 1.125 0 0 1 0 1.972l-11.54 6.347a1.125 1.125 0 0 1-1.667-.986V5.653Z" />
                   </svg>
                 )}
               </button>
@@ -222,23 +188,9 @@ export function MusicList() {
               />
               <span className="text-xs">{formatTime(duration)}</span>
             </div>
-            <button
-              className="btn btn-ghost btn-circle btn-sm sm:btn-md flex-shrink-0"
-              onClick={() => setPlayingMusic(null)}
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                strokeWidth={1.5}
-                stroke="currentColor"
-                className="size-5 sm:size-6"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M6 18L18 6M6 6l12 12"
-                />
+            <button className="btn btn-ghost btn-circle btn-sm sm:btn-md flex-shrink-0" onClick={() => setPlayingMusic(null)}>
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-5 sm:size-6">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
               </svg>
             </button>
           </div>
@@ -256,7 +208,7 @@ export function MusicList() {
               height="0"
               config={{
                 youtube: {
-                  playerVars: { showinfo: 1 }
+                  playerVars: { playsinline: 1 },
                 },
               } as any}
             />
