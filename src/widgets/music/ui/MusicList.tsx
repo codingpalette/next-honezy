@@ -4,7 +4,7 @@
 import { useGetYoutubeMusic } from "@/src/entities/youtube";
 import { channels } from "@/src/shared/lib";
 import Image from "next/image";
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import ReactPlayer from "react-player/youtube";
 import { youtube_music } from "@prisma/client";
 
@@ -26,6 +26,20 @@ export function MusicList() {
       setPlayingMusic(music);
       setPlaying(true);
       setProgress(0);
+    }
+  };
+
+  // playingMusic 변경 시 재생 상태 동기화
+  useEffect(() => {
+    if (playingMusic && !playing) {
+      setPlaying(true); // 재생 시작 보장
+    }
+  }, [playingMusic]);
+
+  // ReactPlayer 준비 완료 시 재생 시작
+  const handleReady = () => {
+    if (playing && playerRef.current) {
+      playerRef.current.seekTo(0); // 처음부터 재생
     }
   };
 
@@ -139,7 +153,6 @@ export function MusicList() {
       {playingMusic && (
         <div className="fixed bottom-0 left-0 right-0 bg-base-200 p-2 shadow-lg z-50">
           <div className="flex items-center gap-2 sm:gap-4 max-w-screen-xl mx-auto">
-            {/* 썸네일 */}
             <div className="size-10 sm:size-12 rounded-box overflow-hidden flex-shrink-0">
               <img
                 className="object-cover w-full h-full"
@@ -147,12 +160,10 @@ export function MusicList() {
                 alt={playingMusic.title}
               />
             </div>
-            {/* 제목 */}
             <div className="flex-1 min-w-0">
               <div className="text-xs sm:text-sm font-semibold truncate">{playingMusic.title}</div>
               <div className="text-xs opacity-60">{playingMusic.time}</div>
             </div>
-            {/* 재생 컨트롤 */}
             <div className="flex items-center gap-1 sm:gap-2 flex-shrink-0">
               <button className="btn btn-ghost btn-circle btn-sm sm:btn-md" onClick={() => setPlaying(!playing)}>
                 {playing ? (
@@ -166,7 +177,6 @@ export function MusicList() {
                 )}
               </button>
             </div>
-            {/* 진행 바 */}
             <div className="flex-1 hidden sm:flex items-center gap-2">
               <span className="text-xs">{formatTime(progress)}</span>
               <input
@@ -185,7 +195,6 @@ export function MusicList() {
               />
               <span className="text-xs">{formatTime(duration)}</span>
             </div>
-            {/* 숨김 버튼 */}
             <button className="btn btn-ghost btn-circle btn-sm sm:btn-md flex-shrink-0" onClick={() => setPlayingMusic(null)}>
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-5 sm:size-6">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
@@ -200,6 +209,7 @@ export function MusicList() {
               onProgress={handleProgress}
               onDuration={handleDuration}
               onEnded={() => setPlaying(false)}
+              onReady={handleReady}
               width="0"
               height="0"
             />
