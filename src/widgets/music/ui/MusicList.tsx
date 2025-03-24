@@ -44,8 +44,6 @@ export function MusicList() {
     }
   }, [playingMusic]);
 
-  // 플레이어 초기화 함수
-
   // YouTube URL에서 videoId 추출
   const extractVideoId = (url: string) => {
     const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
@@ -78,7 +76,7 @@ export function MusicList() {
     }
   };
 
-  // 플레이어 초기화 함수에서 autoplay 제거 및 재생 로직 개선
+  // 플레이어 초기화 함수
   const initializePlayer = (url: string) => {
     if (playerRef.current) {
       playerRef.current.destroy(); // 기존 플레이어 제거
@@ -120,6 +118,8 @@ export function MusicList() {
       },
     });
   };
+
+
 
 
   const formatTime = (seconds: number) => {
