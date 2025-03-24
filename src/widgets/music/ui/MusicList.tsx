@@ -61,31 +61,24 @@ export function MusicList() {
       } else {
         playerRef.current?.playVideo();
         setPlaying(true);
-        if (playerRef.current?.isMuted()) {
-          playerRef.current.unMute(); // 재생 시 음소거 해제
-          setMuted(false);
-        }
       }
     } else {
       setPlayingMusic(music);
       setPlaying(true);
       setProgress(0);
       setMuted(false);
+
+      // 플레이어가 아직 초기화되지 않았다면 초기화 후 바로 재생
       if (!playerRef.current && (window as any).YT?.Player) {
         initializePlayer(music.link);
       } else if (playerRef.current) {
-        playerRef.current.loadVideoById(extractVideoId(music.link));
+        playerRef.current.loadVideoById(extractVideoId(music.link)); // 새 비디오 로드 후 재생
         playerRef.current.playVideo();
-        if (playerRef.current.isMuted()) {
-          playerRef.current.unMute(); // 새 영상 로드 후 음소거 해제
-          setMuted(false);
-        }
       }
     }
   };
 
   // 플레이어 초기화 함수에서 autoplay 제거 및 재생 로직 개선
-
   const initializePlayer = (url: string) => {
     if (playerRef.current) {
       playerRef.current.destroy(); // 기존 플레이어 제거
@@ -97,28 +90,17 @@ export function MusicList() {
       videoId: extractVideoId(url),
       playerVars: {
         playsinline: 1, // 모바일에서 인라인 재생
-        autoplay: 1,    // 자동 재생 활성화
-        mute: 1,        // 처음에 음소거 상태로 시작
       },
       events: {
         onReady: (event: any) => {
           setDuration(event.target.getDuration());
           if (playing) {
-            event.target.playVideo(); // 준비되면 바로 재생 (보험용)
-            if (event.target.isMuted()) {
-              event.target.unMute(); // 준비 완료 시 음소거 해제
-              setMuted(false);
-            }
+            event.target.playVideo(); // 준비되면 바로 재생
           }
         },
         onStateChange: (event: any) => {
           if (event.data === (window as any).YT.PlayerState.PLAYING) {
             setPlaying(true);
-            // 재생 시작 시 음소거 해제
-            if (playerRef.current && playerRef.current.isMuted()) {
-              playerRef.current.unMute();
-              setMuted(false); // 상태 업데이트
-            }
             const updateProgress = () => {
               if (playerRef.current && playerRef.current.getCurrentTime) {
                 setProgress(playerRef.current.getCurrentTime());
@@ -138,7 +120,6 @@ export function MusicList() {
       },
     });
   };
-
 
 
   const formatTime = (seconds: number) => {
