@@ -45,48 +45,6 @@ export function MusicList() {
   }, [playingMusic]);
 
   // 플레이어 초기화 함수
-  const initializePlayer = (url: string) => {
-    if (playerRef.current) {
-      playerRef.current.destroy(); // 기존 플레이어 제거
-    }
-
-    playerRef.current = new (window as any).YT.Player('youtube-player', {
-      height: '0',
-      width: '0',
-      videoId: extractVideoId(url), // URL에서 videoId 추출
-      playerVars: {
-        playsinline: 1, // 모바일에서 인라인 재생
-        autoplay: 0,    // 자동 재생은 모바일에서 제한됨
-      },
-      events: {
-        onReady: (event: any) => {
-          if (playing) {
-            event.target.playVideo();
-          }
-          setDuration(event.target.getDuration());
-        },
-        onStateChange: (event: any) => {
-          if (event.data === (window as any).YT.PlayerState.PLAYING) {
-            setPlaying(true);
-            const updateProgress = () => {
-              if (playerRef.current && playerRef.current.getCurrentTime) {
-                setProgress(playerRef.current.getCurrentTime());
-                requestAnimationFrame(updateProgress);
-              }
-            };
-            requestAnimationFrame(updateProgress);
-          } else if (event.data === (window as any).YT.PlayerState.ENDED) {
-            setPlaying(false);
-          } else if (event.data === (window as any).YT.PlayerState.PAUSED) {
-            setPlaying(false);
-          }
-        },
-        onError: (event: any) => {
-          console.error("YouTube Player Error:", event.data);
-        },
-      },
-    });
-  };
 
   // YouTube URL에서 videoId 추출
   const extractVideoId = (url: string) => {
@@ -109,7 +67,58 @@ export function MusicList() {
       setPlaying(true);
       setProgress(0);
       setMuted(false);
+
+      // 플레이어가 아직 초기화되지 않았다면 초기화 후 바로 재생
+      if (!playerRef.current && (window as any).YT?.Player) {
+        initializePlayer(music.link);
+      } else if (playerRef.current) {
+        playerRef.current.loadVideoById(extractVideoId(music.link)); // 새 비디오 로드 후 재생
+        playerRef.current.playVideo();
+      }
     }
+  };
+
+  // 플레이어 초기화 함수에서 autoplay 제거 및 재생 로직 개선
+  const initializePlayer = (url: string) => {
+    if (playerRef.current) {
+      playerRef.current.destroy(); // 기존 플레이어 제거
+    }
+
+    playerRef.current = new (window as any).YT.Player('youtube-player', {
+      height: '0',
+      width: '0',
+      videoId: extractVideoId(url),
+      playerVars: {
+        playsinline: 1, // 모바일에서 인라인 재생
+      },
+      events: {
+        onReady: (event: any) => {
+          setDuration(event.target.getDuration());
+          if (playing) {
+            event.target.playVideo(); // 준비되면 바로 재생
+          }
+        },
+        onStateChange: (event: any) => {
+          if (event.data === (window as any).YT.PlayerState.PLAYING) {
+            setPlaying(true);
+            const updateProgress = () => {
+              if (playerRef.current && playerRef.current.getCurrentTime) {
+                setProgress(playerRef.current.getCurrentTime());
+                requestAnimationFrame(updateProgress);
+              }
+            };
+            requestAnimationFrame(updateProgress);
+          } else if (event.data === (window as any).YT.PlayerState.ENDED) {
+            setPlaying(false);
+          } else if (event.data === (window as any).YT.PlayerState.PAUSED) {
+            setPlaying(false);
+          }
+        },
+        onError: (event: any) => {
+          console.error("YouTube Player Error:", event.data);
+        },
+      },
+    });
   };
 
 
