@@ -4,7 +4,6 @@ import { useGetYoutubeMusic } from "@/src/entities/youtube";
 import { channels } from "@/src/shared/lib";
 import Image from "next/image";
 import { useState, useRef, useEffect } from "react";
-import ReactPlayer from "react-player/youtube";
 import { youtube_music } from "@prisma/client";
 
 export function MusicList() {
@@ -15,47 +14,110 @@ export function MusicList() {
   const [playing, setPlaying] = useState(false);
   const [progress, setProgress] = useState(0);
   const [duration, setDuration] = useState(0);
-  const [muted, setMuted] = useState(false); // 음소거 기본값을 false로 변경
+  const [muted, setMuted] = useState(false);
 
-  const playerRef = useRef<ReactPlayer>(null);
+  const playerRef = useRef<any>(null); // YouTube Player 인스턴스 저장
+
+  // YouTube IFrame API 로드
+  useEffect(() => {
+    const tag = document.createElement('script');
+    tag.src = "https://www.youtube.com/iframe_api";
+    const firstScriptTag = document.getElementsByTagName('script')[0];
+    firstScriptTag.parentNode?.insertBefore(tag, firstScriptTag);
+
+    // YouTube API가 준비되면 호출됨
+    (window as any).onYouTubeIframeAPIReady = () => {
+      if (playingMusic) {
+        initializePlayer(playingMusic.link);
+      }
+    };
+
+    return () => {
+      delete (window as any).onYouTubeIframeAPIReady;
+    };
+  }, []);
+
+  // 새로운 음악이 선택될 때마다 플레이어 초기화
+  useEffect(() => {
+    if (playingMusic && (window as any).YT?.Player) {
+      initializePlayer(playingMusic.link);
+    }
+  }, [playingMusic]);
+
+  // 플레이어 초기화 함수
+  const initializePlayer = (url: string) => {
+    if (playerRef.current) {
+      playerRef.current.destroy(); // 기존 플레이어 제거
+    }
+
+    playerRef.current = new (window as any).YT.Player('youtube-player', {
+      height: '0',
+      width: '0',
+      videoId: extractVideoId(url), // URL에서 videoId 추출
+      playerVars: {
+        playsinline: 1, // 모바일에서 인라인 재생
+        autoplay: 0,    // 자동 재생은 모바일에서 제한됨
+      },
+      events: {
+        onReady: (event: any) => {
+          if (playing) {
+            event.target.playVideo();
+          }
+          setDuration(event.target.getDuration());
+        },
+        onStateChange: (event: any) => {
+          if (event.data === (window as any).YT.PlayerState.PLAYING) {
+            setPlaying(true);
+            const updateProgress = () => {
+              if (playerRef.current && playerRef.current.getCurrentTime) {
+                setProgress(playerRef.current.getCurrentTime());
+                requestAnimationFrame(updateProgress);
+              }
+            };
+            requestAnimationFrame(updateProgress);
+          } else if (event.data === (window as any).YT.PlayerState.ENDED) {
+            setPlaying(false);
+          } else if (event.data === (window as any).YT.PlayerState.PAUSED) {
+            setPlaying(false);
+          }
+        },
+        onError: (event: any) => {
+          console.error("YouTube Player Error:", event.data);
+        },
+      },
+    });
+  };
+
+  // YouTube URL에서 videoId 추출
+  const extractVideoId = (url: string) => {
+    const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+    const match = url.match(regExp);
+    return match && match[2].length === 11 ? match[2] : null;
+  };
 
   const handlePlay = (music: youtube_music) => {
     if (playingMusic?.id === music.id) {
-      setPlaying(!playing);
+      if (playing) {
+        playerRef.current?.pauseVideo();
+        setPlaying(false);
+      } else {
+        playerRef.current?.playVideo();
+        setPlaying(true);
+      }
     } else {
       setPlayingMusic(music);
       setPlaying(true);
       setProgress(0);
-      setMuted(false); // 재생 시 음소거 해제
+      setMuted(false);
     }
   };
 
-  const handleReady = () => {
-    if (playing && playerRef.current) {
-      playerRef.current.seekTo(0); // 처음부터 재생
-    }
-  };
-
-  const handleProgress = (state: { playedSeconds: number }) => {
-    setProgress(state.playedSeconds);
-  };
-
-  const handleDuration = (duration: number) => {
-    setDuration(duration);
-  };
 
   const formatTime = (seconds: number) => {
     const minutes = Math.floor(seconds / 60);
     const secs = Math.floor(seconds % 60);
     return `${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
   };
-
-  // 모바일에서 재생 상태를 강제로 동기화
-  useEffect(() => {
-    if (playing && playerRef.current && playingMusic) {
-      playerRef.current.seekTo(0); // 모바일에서 강제로 처음부터 재생 시도
-    }
-  }, [playing, playingMusic]);
 
   return (
     <>
@@ -150,6 +212,7 @@ export function MusicList() {
       </div>
 
       {/* 음악 재생 바 */}
+
       {playingMusic && (
         <div className="fixed bottom-0 left-0 right-0 bg-base-200 p-2 shadow-lg z-50">
           <div className="flex items-center gap-2 sm:gap-4 max-w-screen-xl mx-auto">
@@ -165,25 +228,84 @@ export function MusicList() {
               <div className="text-xs opacity-60">{playingMusic.time}</div>
             </div>
             <div className="flex items-center gap-1 sm:gap-2 flex-shrink-0">
-              <button className="btn btn-ghost btn-circle btn-sm sm:btn-md" onClick={() => setPlaying(!playing)}>
+              <button
+                className="btn btn-ghost btn-circle btn-sm sm:btn-md"
+                onClick={() => {
+                  if (playing) {
+                    playerRef.current?.pauseVideo();
+                    setPlaying(false);
+                  } else {
+                    playerRef.current?.playVideo();
+                    setPlaying(true);
+                  }
+                }}
+              >
                 {playing ? (
-                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-5 sm:size-6">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    strokeWidth={1.5}
+                    stroke="currentColor"
+                    className="size-5 sm:size-6"
+                  >
                     <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 5.25v13.5m-7.5-13.5v13.5" />
                   </svg>
                 ) : (
-                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-5 sm:size-6">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M5.25 5.653c0-.856.917-1.398 1.667-.986l11.54 6.347a1.125 1.125 0 0 1 0 1.972l-11.54 6.347a1.125 1.125 0 0 1-1.667-.986V5.653Z" />
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    strokeWidth={1.5}
+                    stroke="currentColor"
+                    className="size-5 sm:size-6"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M5.25 5.653c0-.856.917-1.398 1.667-.986l11.54 6.347a1.125 1.125 0 0 1 0 1.972l-11.54 6.347a1.125 1.125 0 0 1-1.667-.986V5.653Z"
+                    />
                   </svg>
                 )}
               </button>
-              <button className="btn btn-ghost btn-circle btn-sm sm:btn-md" onClick={() => setMuted(!muted)}>
+              <button
+                className="btn btn-ghost btn-circle btn-sm sm:btn-md"
+                onClick={() => {
+                  setMuted(!muted);
+                  if (playerRef.current) {
+                    muted ? playerRef.current.unMute() : playerRef.current.mute();
+                  }
+                }}
+              >
                 {muted ? (
-                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-5 sm:size-6">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M17.25 9.75L19.5 12m0 0l2.25 2.25M19.5 12l2.25-2.25M19.5 12l-2.25 2.25m-10.5-6l4.72-4.72a.75.75 0 011.28.531V19.94a.75.75 0 01-1.28.53l-4.72-4.72H4.51c-.88 0-1.704-.506-1.938-1.354A9.01 9.01 0 012.25 12c0-.83.112-1.633.322-2.395C2.806 8.757 3.63 8.25 4.51 8.25H6.75z" />
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    strokeWidth={1.5}
+                    stroke="currentColor"
+                    className="size-5 sm:size-6"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M17.25 9.75L19.5 12m0 0l2.25 2.25M19.5 12l2.25-2.25M19.5 12l-2.25 2.25m-10.5-6l4.72-4.72a.75.75 0 011.28.531V19.94a.75.75 0 01-1.28.53l-4.72-4.72H4.51c-.88 0-1.704-.506-1.938-1.354A9.01 9.01 0 012.25 12c0-.83.112-1.633.322-2.395C2.806 8.757 3.63 8.25 4.51 8.25H6.75z"
+                    />
                   </svg>
                 ) : (
-                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-5 sm:size-6">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M19.114 5.636a9 9 0 010 12.728M16.463 8.288a5.25 5.25 0 010 7.424M6.75 8.25l4.72-4.72a.75.75 0 011.28.53v15.88a.75.75 0 01-1.28.53l-4.72-4.72H4.51c-.88 0-1.704-.506-1.938-1.354A9.01 9.01 0 012.25 12c0-.83.112-1.633.322-2.395C2.806 8.757 3.63 8.25 4.51 8.25H6.75z" />
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    strokeWidth={1.5}
+                    stroke="currentColor"
+                    className="size-5 sm:size-6"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M19.114 5.636a9 9 0 010 12.728M16.463 8.288a5.25 5.25 0 010 7.424M6.75 8.25l4.72-4.72a.75.75 0 011.28.53v15.88a.75.75 0 01-1.28.53l-4.72-4.72H4.51c-.88 0-1.704-.506-1.938-1.354A9.01 9.01 0 012.25 12c0-.83.112-1.633.322-2.395C2.806 8.757 3.63 8.25 4.51 8.25H6.75z"
+                    />
                   </svg>
                 )}
               </button>
@@ -206,37 +328,28 @@ export function MusicList() {
               />
               <span className="text-xs">{formatTime(duration)}</span>
             </div>
-            <button className="btn btn-ghost btn-circle btn-sm sm:btn-md flex-shrink-0" onClick={() => setPlayingMusic(null)}>
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-5 sm:size-6">
+            <button
+              className="btn btn-ghost btn-circle btn-sm sm:btn-md flex-shrink-0"
+              onClick={() => setPlayingMusic(null)}
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth={1.5}
+                stroke="currentColor"
+                className="size-5 sm:size-6"
+              >
                 <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
               </svg>
             </button>
           </div>
           <div style={{ position: 'absolute', left: '-9999px', width: 0, height: 0 }}>
-            <ReactPlayer
-              ref={playerRef}
-              url={playingMusic.link}
-              playing={playing}
-              muted={muted}
-              onProgress={handleProgress}
-              onDuration={handleDuration}
-              onEnded={() => setPlaying(false)}
-              onReady={handleReady}
-              onError={(e) => console.error("Playback error:", e)} // 오류 로그 강화
-              width="0"
-              height="0"
-              config={{
-                youtube: {
-                  playerVars: {
-                    playsinline: 1, // 인라인 재생 강제
-                    autoplay: 1,    // 자동 재생 시도 (모바일에서는 사용자 상호작용 필요)
-                  },
-                },
-              } as any}
-            />
+            <div id="youtube-player"></div>
           </div>
         </div>
       )}
+
     </>
   );
 }
