@@ -175,7 +175,7 @@ export function TicTacToeBox() {
             <div className="modal-box">
               <h3 className="font-bold text-lg text-center">게임 종료</h3>
               <p className="py-4 text-center">
-                {winner ? (winner === 'X' ? 'You Win!' : 'Computer Wins!') : "It's a Draw!"}
+                {winner ? (winner === 'X' ? '승리!' : '패배!') : "무승부!"}
               </p>
               <div className="modal-action flex justify-center">
                 <button className="btn btn-primary" onClick={resetGame}>
