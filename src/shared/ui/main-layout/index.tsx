@@ -21,10 +21,13 @@ export function MainLayou({ children }: { children: React.ReactNode }) {
             <div className="flex-none">
               <ul className="menu menu-horizontal px-1">
                 <li>
-                  <Link href="/music">MUSIC</Link>
+                  <Link href="/multiview">멀티뷰</Link>
                 </li>
                 <li>
-                  <Link href="/schedule">SCHEDULE</Link>
+                  <Link href="/music">뮤직</Link>
+                </li>
+                <li>
+                  <Link href="/schedule">스케줄</Link>
                 </li>
               </ul>
             </div>
