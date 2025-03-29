@@ -22,23 +22,15 @@ export default function MultiviewPage() {
       if (audioChannel === channel.chzzk_id) {
         setAudioChannel(null); // 음성도 해제
       }
-    } else if (selectedChannels.length < 4) {
+    } else if (selectedChannels.length < 6) {
       // 최대 4개까지 추가
       setSelectedChannels([...selectedChannels, channel]);
     }
   };
 
-  // 음성 토글 핸들러
-  const toggleAudio = (chzzk_id: string) => {
-    if (audioChannel === chzzk_id) {
-      setAudioChannel(null); // 음성 끄기
-    } else {
-      setAudioChannel(chzzk_id); // 음성 켜기
-    }
-  };
 
   return (
-    <div className="w-full h-screen bg-black p-4">
+    <div className="w-full min-h-dvh bg-black p-4">
 
       {/* 멤버 선택 버튼 */}
       <ul className="flex gap-4 items-center flex-wrap mb-6">
@@ -60,16 +52,16 @@ export default function MultiviewPage() {
       </ul>
 
       {/* 멀티뷰 레이아웃 */}
-      <div className="grid grid-cols-2 gap-4 h-[80vh]">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 lg:h-[80vh] bg-black">
         {selectedChannels.length === 0 ? (
-          <div className="col-span-2 flex items-center justify-center text-gray-500">
-            맴버를 선택해주세요.
+          <div className="col-span-2 flex items-center justify-center text-gray-500 h-[80vh] lg:h-auto">
+            맴버를 선택해주세요.(최대 4명)
           </div>
         ) : (
           selectedChannels.map((channel) => (
             <div
               key={channel.chzzk_id}
-              className="relative bg-black rounded-lg overflow-hidden"
+              className="relative bg-black rounded-lg overflow-hidden h-[80vh] lg:h-auto "
             >
               {/* 치지직 스트리밍 iframe */}
               <iframe
@@ -77,20 +69,6 @@ export default function MultiviewPage() {
                 className="w-full h-full"
                 allowFullScreen
               />
-
-              {/* 스트리머 이름 및 음성 버튼 */}
-              <div className="absolute top-2 left-2 flex items-center gap-2">
-                <span className="text-white font-bold bg-black bg-opacity-50 px-2 py-1 rounded">
-                  {channel.name}
-                </span>
-                <button
-                  className={`btn btn-sm ${audioChannel === channel.chzzk_id ? "btn-success" : "btn-ghost"
-                    }`}
-                  onClick={() => toggleAudio(channel.chzzk_id)}
-                >
-                  {audioChannel === channel.chzzk_id ? "음성 끄기" : "음성 켜기"}
-                </button>
-              </div>
             </div>
           ))
         )}
