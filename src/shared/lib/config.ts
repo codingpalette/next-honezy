@@ -1,7 +1,14 @@
 
+export interface Channel {
+  channelName: string;
+  name: string;
+  youtube_id: string;
+  chzzk_id: string;
+  image: string;
+}
 
 
-export const channels = [
+export const channels: Channel[] = [
   {
     channelName: "honeychurros",
     name: "허니츄러스",
