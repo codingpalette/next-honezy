@@ -54,14 +54,32 @@ model youtube_music {
   updated_at DateTime  @updatedAt
 }
 
+model Tag {
+  id         BigInt        @id @default(autoincrement())
+  name       String        @unique // 태그 이름 (중복 방지)
+  schedules  ScheduleTag[] // 다대다 관계
+  created_at DateTime      @default(now())
+  updated_at DateTime      @updatedAt
+}
+
+model ScheduleTag {
+  schedule_id BigInt
+  tag_id      BigInt
+  schedule    schedule @relation(fields: [schedule_id], references: [id])
+  tag         Tag      @relation(fields: [tag_id], references: [id])
+
+  @@id([schedule_id, tag_id]) // 복합 키 설정
+}
+
 model schedule {
-  id         BigInt   @id @default(autoincrement())
-  title      String   @db.VarChar
-  subtitle   String?  @db.VarChar
-  time       String   @db.VarChar // "HH:MM" 형식으로 저장
-  date       DateTime @db.Date // "YYYY-MM-DD" 형식
+  id         BigInt        @id @default(autoincrement())
+  title      String        @db.VarChar
+  subtitle   String?       @db.VarChar
+  time       String        @db.VarChar // "HH:MM" 형식으로 저장
+  date       DateTime      @db.Date // "YYYY-MM-DD" 형식
   member_id  BigInt // members.id를 참조
-  video_link String?  @db.VarChar
+  video_link String?       @db.VarChar
+  tags       ScheduleTag[] // 다대다 관계로 태그 연결
 
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
