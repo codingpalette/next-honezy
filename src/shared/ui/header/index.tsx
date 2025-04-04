@@ -29,6 +29,9 @@ export function Header() {
               <li>
                 <Link href="/schedule">스케줄</Link>
               </li>
+              <li>
+                <Link href="/content">컨텐츠</Link>
+              </li>
             </ul>
           </div>
           <label className="swap swap-rotate cursor-pointer">
