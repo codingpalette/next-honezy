@@ -4,11 +4,19 @@ import { useEffect, useRef } from 'react';
 
 export function ShootingGame() {
   const gameRef = useRef<any>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    let script: HTMLScriptElement | null = null;
+
     const initPhaser = () => {
       if (typeof window.Phaser === 'undefined') {
         console.error('Phaser is not loaded yet');
+        return;
+      }
+
+      // 이미 게임이 실행 중이라면 새로 생성하지 않음
+      if (gameRef.current) {
         return;
       }
 
@@ -17,10 +25,21 @@ export function ShootingGame() {
           super('StartScene');
         }
 
+        preload() {
+          this.load.image('game_start', '/content/shooting/game_start.png');
+        }
+
         create() {
-          this.add.text(400, 250, 'Shooting Game', {
+          // 배경 이미지 추가
+          this.add.image(0, 0, 'game_start')
+            .setOrigin(0, 0)
+            .setDisplaySize(config.width, config.height);
+
+          this.add.text(400, 250, '안아줘요 허츄!', {
             font: '32px Arial',
             fill: '#ffffff',
+            stroke: '#000000',
+            strokeThickness: 4
           }).setOrigin(0.5);
 
           const startButton = this.add.text(400, 350, 'Start Game', {
@@ -49,10 +68,17 @@ export function ShootingGame() {
           super('GameScene');
           this.lastFired = 0;
           this.enemySpawnEvent = null;
+          this.score = 0;
+          this.scoreText = null;
+          this.difficultyLevel = 1;
+          this.enemySpeed = 100;
+          this.spawnDelay = 2000;
+          this.difficultyTimer = null;
+          this.difficultyText = null;
         }
 
         preload() {
-          this.load.image('background1', '/content/shooting/background.png');
+          this.load.image('background1', '/content/shooting/background2.png');
           this.load.image('player', '/content/shooting/HoneyChurros1.png');
           this.load.image('player2', '/content/shooting/zelly1.png');
           this.load.image('bullet', '/content/shooting/hart.png');
@@ -60,6 +86,22 @@ export function ShootingGame() {
 
         create() {
           this.background1 = this.add.image(0, 0, 'background1').setOrigin(0, 0);
+
+          // 점수 표시
+          this.score = 0;
+          this.scoreText = this.add.text(16, 16, '점수: 0', {
+            font: '18px Arial',
+            fill: '#ffffff'
+          });
+
+          // 난이도 표시
+          this.difficultyLevel = 1;
+          this.enemySpeed = 100;
+          this.spawnDelay = 2000;
+          this.difficultyText = this.add.text(16, 40, '난이도: 1', {
+            font: '18px Arial',
+            fill: '#ffffff'
+          });
 
           this.player = this.physics.add.image(config.width / 2, config.height / 2, 'player')
             .setScale(0.1)
@@ -77,13 +119,15 @@ export function ShootingGame() {
           this.keyboardInput = this.input.keyboard.createCursorKeys();
           this.mouseInput = this.input.activePointer;
 
-          this.add.text(10, 10, 'Shooting Game - Left Click to Shoot', {
-            font: '16px Arial',
-            fill: '#f5e99f',
-          });
-
-          // 적 스폰 타이머 시작
           this.startEnemySpawn();
+
+          // 10초마다 난이도 증가
+          this.difficultyTimer = this.time.addEvent({
+            delay: 10000,
+            callback: this.increaseDifficulty,
+            callbackScope: this,
+            loop: true
+          });
 
           this.physics.add.collider(this.bullets, this.enemies, this.hitEnemy, null, this);
           this.physics.add.collider(this.player, this.enemies, this.gameOver, null, this);
@@ -98,7 +142,7 @@ export function ShootingGame() {
           }
 
           this.enemies.getChildren().forEach((enemy: any) => {
-            this.physics.moveToObject(enemy, this.player, 100);
+            this.physics.moveToObject(enemy, this.player, this.enemySpeed);
           });
         }
 
@@ -133,26 +177,26 @@ export function ShootingGame() {
           let x, y;
 
           switch (side) {
-            case 0: // 상단
+            case 0:
               x = window.Phaser.Math.Between(0, config.width);
               y = -50;
               break;
-            case 1: // 우측
+            case 1:
               x = config.width + 50;
               y = window.Phaser.Math.Between(0, config.height);
               break;
-            case 2: // 하단
+            case 2:
               x = window.Phaser.Math.Between(0, config.width);
               y = config.height + 50;
               break;
-            case 3: // 좌측
+            case 3:
               x = -50;
               y = window.Phaser.Math.Between(0, config.height);
               break;
           }
 
           const enemy = this.enemies.create(x, y, 'player2')
-            .setScale(0.1)
+            .setScale(0.05)
             .setCollideWorldBounds(true);
           enemy.body.setSize(enemy.width * 0.5, enemy.height * 0.5);
           enemy.body.setOffset(enemy.width * 0.25, enemy.height * 0.25);
@@ -178,34 +222,110 @@ export function ShootingGame() {
         hitEnemy(bullet: any, enemy: any) {
           bullet.setActive(false).setVisible(false);
           enemy.destroy();
+
+          // 점수 증가
+          this.score += 10;
+          this.scoreText.setText('점수: ' + this.score);
         }
 
         gameOver() {
-          this.scene.start('GameOverScene');
+          this.scene.start('GameOverScene', { score: this.score, level: this.difficultyLevel });
           if (this.enemySpawnEvent) {
             this.enemySpawnEvent.remove();
+          }
+          if (this.difficultyTimer) {
+            this.difficultyTimer.remove();
           }
         }
 
         startEnemySpawn() {
+          if (this.enemySpawnEvent) {
+            this.enemySpawnEvent.remove();
+          }
+
           this.enemySpawnEvent = this.time.addEvent({
-            delay: 2000,
+            delay: this.spawnDelay,
             callback: this.spawnEnemy,
             callbackScope: this,
             loop: true,
           });
+        }
+
+        increaseDifficulty() {
+          this.difficultyLevel++;
+
+          // 적 이동 속도 증가
+          this.enemySpeed += 20;
+
+          // 스폰 딜레이 감소 (최소 500ms까지)
+          this.spawnDelay = Math.max(500, this.spawnDelay - 300);
+
+          // 난이도 표시 업데이트
+          this.difficultyText.setText('난이도: ' + this.difficultyLevel);
+
+          // 스폰 이벤트 재설정
+          this.startEnemySpawn();
+
+          // 난이도 증가 알림
+          const levelUpText = this.add.text(config.width / 2, config.height / 2 - 50, '난이도 증가!', {
+            font: '24px Arial',
+            fill: '#ffff00',
+            stroke: '#000000',
+            strokeThickness: 4
+          }).setOrigin(0.5);
+
+          // 2초 후 알림 제거
+          this.time.delayedCall(2000, () => {
+            levelUpText.destroy();
+          });
+
+          // 난이도 5부터는 여러 적 동시 생성
+          if (this.difficultyLevel >= 5) {
+            const enemyCount = Math.min(5, Math.floor(this.difficultyLevel / 2));
+            for (let i = 0; i < enemyCount; i++) {
+              this.spawnEnemy();
+            }
+          }
         }
       }
 
       class GameOverScene extends window.Phaser.Scene {
         constructor() {
           super('GameOverScene');
+          this.score = 0;
+          this.level = 1;
+        }
+
+        preload() {
+          this.load.image('game_over', '/content/shooting/game_and.png');
+        }
+
+        init(data: { score?: number, level?: number }) {
+          this.score = data.score || 0;
+          this.level = data.level || 1;
         }
 
         create() {
-          this.add.text(config.width / 2, config.height / 2 - 50, 'GAME OVER', {
+          // 배경 이미지 추가
+          this.add.image(0, 0, 'game_over')
+            .setOrigin(0, 0)
+            .setDisplaySize(config.width, config.height);
+
+          this.add.text(config.width / 2, config.height / 2 - 70, 'GAME OVER', {
             font: '32px Arial',
             fill: '#ff0000',
+            stroke: '#000000',
+            strokeThickness: 4
+          }).setOrigin(0.5);
+
+          this.add.text(config.width / 2, config.height / 2 - 20, '최종 점수: ' + this.score, {
+            font: '24px Arial',
+            fill: '#ffffff',
+          }).setOrigin(0.5);
+
+          this.add.text(config.width / 2, config.height / 2 + 10, '도달 난이도: ' + this.level, {
+            font: '24px Arial',
+            fill: '#ffffff',
           }).setOrigin(0.5);
 
           const restartButton = this.add.text(config.width / 2, config.height / 2 + 50, 'Restart', {
@@ -249,38 +369,42 @@ export function ShootingGame() {
       gameRef.current = game;
     };
 
-    const script = document.createElement('script');
-    script.src = 'https://cdn.jsdelivr.net/npm/phaser@3.80.1/dist/phaser.min.js';
-    script.async = true;
-    script.onload = initPhaser;
-    document.body.appendChild(script);
+    // Phaser 스크립트가 이미 로드되어 있는지 확인
+    if (typeof window.Phaser === 'undefined') {
+      script = document.createElement('script');
+      script.src = 'https://cdn.jsdelivr.net/npm/phaser@3.80.1/dist/phaser.min.js';
+      script.async = true;
+      script.onload = initPhaser;
+      document.body.appendChild(script);
+    } else {
+      initPhaser();
+    }
 
+    // Cleanup 함수
     return () => {
       if (gameRef.current) {
         gameRef.current.destroy(true);
+        gameRef.current = null;
       }
-      document.body.removeChild(script);
+      if (script && document.body.contains(script)) {
+        document.body.removeChild(script);
+      }
+      // game-container 내부의 캔버스 제거
+      if (containerRef.current) {
+        containerRef.current.innerHTML = '';
+      }
     };
   }, []);
 
   return (
     <div
+      ref={containerRef}
+      id="game-container"
       style={{
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        height: '100vh',
-        border: '1px solid #000',
+        width: '800px',
+        height: '600px',
       }}
-    >
-      <div
-        id="game-container"
-        style={{
-          width: '800px',
-          height: '600px',
-        }}
-      />
-    </div>
+    />
   );
 }
 
