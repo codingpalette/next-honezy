@@ -11,7 +11,7 @@ export function Header() {
   }, []);
 
   return (
-    <header className="navbar bg-base-100 sticky left-0 top-0 z-40 border-b border-gray-950/5 dark:border-white/10">
+    <header className="bg-base-100 sticky left-0 top-0 z-40 border-b border-gray-950/5 dark:border-white/10 py-1">
       <div className="flex justify-between items-center w-full mx-auto px-4 lg:max-w-7xl lg:px-8">
         <Link href="/" className="flex items-center">
           <Image src="/honeyz-logo.png" width={50} height={50} alt="허니즈로그" />
