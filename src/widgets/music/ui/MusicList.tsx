@@ -177,11 +177,15 @@ export function MusicList() {
                   <div className="text-4xl font-thin opacity-30 tabular-nums w-[50px]">
                     {index + 1}
                   </div>
-                  <div className="size-10 rounded-box overflow-hidden">
-                    <img
+                  <div className="size-10 rounded-box overflow-hidden bg-gray-100 flex items-center justify-center">
+                    <Image
                       className="object-cover w-full h-full"
                       src={music.thumbnail}
                       alt={music.title}
+                      width={80}
+                      height={80}
+                      style={{ width: '100%', height: '100%' }}
+                      priority={index < 5}
                     />
                   </div>
                   <div className="list-col-grow">
