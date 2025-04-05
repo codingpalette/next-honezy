@@ -24,6 +24,9 @@ export const metadata: Metadata = {
   },
 };
 
+// 개발 모드인지 확인하는 함수
+const isDevelopment = process.env.NODE_ENV === 'development';
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -45,7 +48,8 @@ export default function RootLayout({
         <TanstackProvider>
           {children}
         </TanstackProvider>
-        <GoogleAnalytics gaId="G-4KZV4L3ECY" />
+        {/* 개발 모드가 아닐 때만 Google Analytics 로드 */}
+        {!isDevelopment && <GoogleAnalytics gaId="G-4KZV4L3ECY" />}
       </body>
     </html>
   );
