@@ -20,7 +20,7 @@ export function GameCard({ id, title, description, image, tags, disabled = false
   };
 
   return (
-    <div className="card bg-base-100 shadow-xl h-full">
+    <div className="card bg-base-100 shadow-sm h-full">
       <figure className="h-48 overflow-hidden">
         <img
           src={imgError ? "/content/placeholder.svg" : image}
