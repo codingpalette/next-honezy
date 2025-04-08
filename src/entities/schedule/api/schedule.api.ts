@@ -65,3 +65,30 @@ export async function getScheduleList({ date }: { date: string }) {
 
   return grouped;
 }
+
+
+
+export async function getNodeList() {
+  const nodes = await db.schedule.findMany({
+    where: {
+      // date: {
+      //   gte: new Date("2025-03-10"),
+      //   lte: new Date("2025-03-15")
+      // },
+      video_link: {
+        not: null
+      }
+    },
+    include: {
+      tags: {
+        include: {
+          tag: true
+        }
+      },
+      member: true // 멤버 정보도 포함 (선택적)
+    }
+  });
+
+  return nodes;
+
+}

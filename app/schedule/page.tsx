@@ -1,7 +1,7 @@
 import { getScheduleList } from "@/src/entities/schedule";
 import { Calendar, MainLayou } from "@/src/shared/ui";
+import { TabContent } from "@/src/widgets/schedule";
 import dayjs from "dayjs";
-
 
 import { Metadata, ResolvingMetadata } from "next";
 
@@ -18,12 +18,19 @@ export default async function SchedulePage() {
   const date = dayjs().format("YYYY-MM");
   const data = await getScheduleList({ date });
 
+
   return (
     <>
       <MainLayou>
-        <Calendar
+        <TabContent
           eventsByDate={data}
+
         />
+        {/* <Node data={nodes} /> */}
+
+        {/* <Calendar */}
+        {/*   eventsByDate={data} */}
+        {/* /> */}
       </MainLayou>
     </>
   )

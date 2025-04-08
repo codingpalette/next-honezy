@@ -1,5 +1,5 @@
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { getScheduleList } from "../api/schedule.api";
+import { getNodeList, getScheduleList } from "../api/schedule.api";
 
 
 export function useGetScheduleList({ date }: { date: string }) {
@@ -20,6 +20,14 @@ export function useGetScheduleList({ date }: { date: string }) {
     initialData: () => {
       return queryClient.getQueryData(["schedule", date]);
     }
+  })
+}
+
+
+export function useGetNodeList() {
+  return useQuery({
+    queryKey: ["node"],
+    queryFn: () => getNodeList()
   })
 }
 
