@@ -67,28 +67,49 @@ export async function getScheduleList({ date }: { date: string }) {
 }
 
 
-
-export async function getNodeList() {
+export async function getNodeList({ memberIds, keyword }: { memberIds: number[], keyword: string }) {
   const nodes = await db.schedule.findMany({
     where: {
-      // date: {
-      //   gte: new Date("2025-03-10"),
-      //   lte: new Date("2025-03-15")
-      // },
       video_link: {
-        not: null
-      }
+        not: null, // video_link가 있는 스케줄만 조회
+      },
+      member_id: {
+        in: memberIds.map(id => BigInt(id)), // 선택된 멤버 ID로 필터링
+      },
+      OR: keyword
+        ? [
+          {
+            title: {
+              contains: keyword, // 스케줄 제목에서 키워드 검색
+              mode: 'insensitive', // 대소문자 구분 없이 검색
+            },
+          },
+          {
+            tags: {
+              some: {
+                tag: {
+                  name: {
+                    contains: keyword, // 태그 이름에서 키워드 검색
+                    mode: 'insensitive',
+                  },
+                },
+              },
+            },
+          },
+        ]
+        : undefined, // 키워드가 없으면 OR 조건 제외
     },
     include: {
       tags: {
         include: {
-          tag: true
-        }
+          tag: true, // 태그 정보 포함
+        },
       },
-      member: true // 멤버 정보도 포함 (선택적)
-    }
+      member: true, // 멤버 정보 포함
+    },
   });
 
   return nodes;
-
 }
+
+

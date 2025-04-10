@@ -51,9 +51,10 @@ interface Schedule {
 
 interface NodeProps {
   data: Schedule[];
+  isLoading?: boolean;
 }
 
-export function Node({ data }: NodeProps) {
+export function Node({ data, isLoading }: NodeProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const wrapperRef = useRef<HTMLDivElement>(null);
   const cyRef = useRef<cytoscape.Core | null>(null);
@@ -62,7 +63,6 @@ export function Node({ data }: NodeProps) {
 
   // 다크모드 감지
   useEffect(() => {
-    // 초기 테마 감지
     const checkTheme = () => {
       const theme = localStorage.getItem("theme") || "light";
       setIsDarkMode(theme === "dark");
@@ -70,7 +70,6 @@ export function Node({ data }: NodeProps) {
 
     checkTheme();
 
-    // 테마 변경 감지
     const observer = new MutationObserver((mutations) => {
       mutations.forEach((mutation) => {
         if (
@@ -94,14 +93,12 @@ export function Node({ data }: NodeProps) {
   useEffect(() => {
     const handleFullscreenChange = () => {
       setIsFullscreen(!!document.fullscreenElement);
-      
-      // 전체화면일 때 배경색 설정
+
       if (document.fullscreenElement && wrapperRef.current) {
         const theme = localStorage.getItem("theme") || "light";
         wrapperRef.current.style.backgroundColor = theme === "dark" ? "#1d232a" : "#ffffff";
       }
 
-      // Cytoscape 그래프 리사이즈 및 재배치
       if (cyRef.current) {
         setTimeout(() => {
           cyRef.current?.resize();
@@ -120,15 +117,12 @@ export function Node({ data }: NodeProps) {
   const toggleFullscreen = async () => {
     try {
       if (!isFullscreen) {
-        // 전체화면으로 전환
         if (wrapperRef.current) {
-          // 전체화면 전환 전에 배경색 미리 설정
           const theme = localStorage.getItem("theme") || "light";
           wrapperRef.current.style.backgroundColor = theme === "dark" ? "#1d232a" : "#ffffff";
           await wrapperRef.current.requestFullscreen();
         }
       } else {
-        // 전체화면 종료
         if (document.fullscreenElement) {
           await document.exitFullscreen();
         }
@@ -151,7 +145,6 @@ export function Node({ data }: NodeProps) {
     if (!containerRef.current || !data || !Array.isArray(data)) return;
 
     try {
-      // Cytoscape 인스턴스 초기화
       cyRef.current = cytoscape({
         container: containerRef.current,
         elements: transformDataToCytoscapeFormat(data),
@@ -185,13 +178,13 @@ export function Node({ data }: NodeProps) {
           {
             selector: 'node[type="schedule"]',
             style: {
-              'background-color': '#4CAF50' // 녹색
+              'background-color': '#4CAF50'
             }
           },
           {
             selector: 'node[type="tag"]',
             style: {
-              'background-color': '#9C27B0' // 보라색
+              'background-color': '#9C27B0'
             }
           },
           {
@@ -220,7 +213,6 @@ export function Node({ data }: NodeProps) {
               'line-color': '#ff7675',
               'target-arrow-color': '#ff7675',
               'transition-property': 'background-color, line-color, target-arrow-color',
-              // 'transition-duration': 500
             }
           },
           {
@@ -253,6 +245,13 @@ export function Node({ data }: NodeProps) {
         const node = evt.target;
         console.log('노드 클릭:', node.id(), node.data());
 
+        // video_link가 있는지 확인하고 있으면 이동
+        const videoLink = node.data('video_link');
+        if (videoLink) {
+          window.open(videoLink, '_blank');
+          return;
+        }
+
         // 이미 하이라이트된 노드를 클릭한 경우 하이라이트 제거
         if (node.hasClass('highlighted')) {
           cyRef.current?.elements().removeClass('highlighted');
@@ -265,13 +264,13 @@ export function Node({ data }: NodeProps) {
         // 클릭한 노드 하이라이트
         node.addClass('highlighted');
 
-        // 1단계 연결 - 직접 연결된 엣지와 노드
+        // 1단계 연결
         const connectedEdges = node.connectedEdges();
         connectedEdges.addClass('highlighted');
         const connectedNodes = connectedEdges.connectedNodes();
         connectedNodes.addClass('highlighted');
 
-        // 2단계 연결 - 직접 연결된 노드에서 한 단계 더 연결된 엣지와 노드
+        // 2단계 연결
         const secondDegreeEdges = connectedNodes.connectedEdges().difference(connectedEdges);
         secondDegreeEdges.addClass('highlighted');
         const secondDegreeNodes = secondDegreeEdges.connectedNodes().difference(connectedNodes).difference(node);
@@ -283,16 +282,11 @@ export function Node({ data }: NodeProps) {
         const node = evt.target;
 
         if (!node.hasClass('highlighted')) {
-          // 호버한 노드 하이라이트
           node.addClass('hover');
-
-          // 1단계 연결 - 직접 연결된 엣지와 노드
           const connectedEdges = node.connectedEdges();
           connectedEdges.addClass('hover');
           const connectedNodes = connectedEdges.connectedNodes();
           connectedNodes.addClass('hover');
-
-          // 2단계 연결 - 직접 연결된 노드에서 한 단계 더 연결된 엣지와 노드
           const secondDegreeEdges = connectedNodes.connectedEdges().difference(connectedEdges);
           secondDegreeEdges.addClass('hover');
           const secondDegreeNodes = secondDegreeEdges.connectedNodes().difference(connectedNodes).difference(node);
@@ -302,7 +296,6 @@ export function Node({ data }: NodeProps) {
 
       // 노드 호버 이벤트 (마우스 뗌)
       cyRef.current.on('mouseout', 'node', function () {
-        // 호버 효과 제거
         cyRef.current?.elements().removeClass('hover');
       });
 
@@ -310,7 +303,6 @@ export function Node({ data }: NodeProps) {
       console.error('Cytoscape 초기화 오류:', error);
     }
 
-    // 컴포넌트 언마운트 시 정리
     return () => {
       if (cyRef.current) {
         cyRef.current.destroy();
@@ -323,10 +315,9 @@ export function Node({ data }: NodeProps) {
   const transformDataToCytoscapeFormat = (rawData: Schedule[]): cytoscape.ElementDefinition[] => {
     try {
       const elements: cytoscape.ElementDefinition[] = [];
-      const nodeIds = new Set<string>(); // 중복 방지용 Set
-      const tagMap = new Map<number, Tag>(); // 태그 ID를 키로 하는 맵
+      const nodeIds = new Set<string>();
+      const tagMap = new Map<number, Tag>();
 
-      // 먼저 모든 태그를 맵에 저장
       rawData.forEach(schedule => {
         schedule.tags.forEach(st => {
           const tag = st.tag;
@@ -337,20 +328,19 @@ export function Node({ data }: NodeProps) {
       });
 
       rawData.forEach((schedule) => {
-        // Schedule 노드 추가
         const scheduleId = `schedule-${schedule.id}`;
         if (!nodeIds.has(scheduleId)) {
           elements.push({
             data: {
               id: scheduleId,
-              label: `${schedule.title} (${dayjs(schedule.date).format('YYYY-MM-DD')}) `,
-              type: 'schedule'
+              label: `${schedule.title} (${dayjs(schedule.date).format('YYYY-MM-DD')})`,
+              type: 'schedule',
+              video_link: schedule.video_link || null // video_link 추가
             }
           });
           nodeIds.add(scheduleId);
         }
 
-        // Member 노드와 엣지 추가
         const memberId = `member-${schedule.member.id}`;
         if (!nodeIds.has(memberId)) {
           elements.push({
@@ -358,7 +348,7 @@ export function Node({ data }: NodeProps) {
               id: memberId,
               label: schedule.member.name,
               type: 'member',
-              color: schedule.member.color || '#FF9800' // 색상이 없는 경우 기본값 사용
+              color: schedule.member.color || '#FF9800'
             }
           });
           nodeIds.add(memberId);
@@ -371,7 +361,6 @@ export function Node({ data }: NodeProps) {
           }
         });
 
-        // Tag 노드와 엣지 추가
         schedule.tags.forEach((st: ScheduleTag) => {
           const tag = st.tag;
           const tagId = `tag-${tag.id}`;
@@ -393,11 +382,10 @@ export function Node({ data }: NodeProps) {
             }
           });
 
-          // 부모 태그가 있으면 추가
           if (tag.parent_id !== null) {
             const parentTagId = `tag-${tag.parent_id}`;
             const parentTag = tagMap.get(tag.parent_id);
-            
+
             if (!nodeIds.has(parentTagId) && parentTag) {
               elements.push({
                 data: {
@@ -408,7 +396,7 @@ export function Node({ data }: NodeProps) {
               });
               nodeIds.add(parentTagId);
             }
-            
+
             elements.push({
               data: {
                 id: `edge-t${tag.id}-t${tag.parent_id}`,
@@ -418,8 +406,6 @@ export function Node({ data }: NodeProps) {
             });
           }
 
-          // 자식 태그 처리는 parent_id 기반으로 찾아야 함
-          // 현재 태그의 ID를 parent_id로 가진 모든 태그를 찾아 자식으로 처리
           tagMap.forEach((childTag, childId) => {
             if (childTag.parent_id === tag.id && childId !== tag.id) {
               const childTagId = `tag-${childId}`;
@@ -453,40 +439,59 @@ export function Node({ data }: NodeProps) {
   };
 
   return (
-    <div 
-      ref={wrapperRef} 
-      className="relative w-full"
-      style={{
-        backgroundColor: isDarkMode ? "#1d232a" : "#ffffff",
-      }}
-    >
-      <div
-        ref={containerRef}
-        className="w-full overflow-hidden card card-xs shadow-sm"
-        style={{
-          height: isFullscreen ? '100vh' : 'calc(100dvh - 200px)',
-        }}
-      />
-      
-      <div className="absolute top-4 right-4 flex gap-2">
-        <button 
-          onClick={centerGraph}
-          className="btn btn-circle btn-sm"
-          aria-label="중앙 정렬"
-          title="중앙 정렬"
-        >
-          <Maximize size={18} />
-        </button>
-        
-        <button 
-          onClick={toggleFullscreen}
-          className="btn btn-circle btn-sm"
-          aria-label={isFullscreen ? '전체화면 종료' : '전체화면'}
-          title={isFullscreen ? '전체화면 종료' : '전체화면'}
-        >
-          {isFullscreen ? <Minimize size={18} /> : <Expand size={18} />}
-        </button>
-      </div>
-    </div>
+    <>
+      {(isLoading && data.length === 0) ? (
+        <>
+          <div
+
+            className="w-full overflow-hidden card card-xs shadow-sm flex items-center justify-center"
+            style={{
+              height: 'calc(100dvh - 300px)',
+            }}
+          >
+            <span className="loading loading-spinner loading-lg"></span>
+          </div>
+        </>
+      ) : (
+        <>
+
+          <div
+            ref={wrapperRef}
+            className="relative w-full"
+            style={{
+              backgroundColor: isDarkMode ? "#1d232a" : "#ffffff",
+            }}
+          >
+            <div
+              ref={containerRef}
+              className="w-full overflow-hidden card card-xs shadow-sm"
+              style={{
+                height: isFullscreen ? '100vh' : 'calc(100dvh - 300px)',
+              }}
+            />
+
+            <div className="absolute top-4 right-4 flex gap-2">
+              <button
+                onClick={centerGraph}
+                className="btn btn-circle btn-sm"
+                aria-label="중앙 정렬"
+                title="중앙 정렬"
+              >
+                <Maximize size={18} />
+              </button>
+
+              <button
+                onClick={toggleFullscreen}
+                className="btn btn-circle btn-sm"
+                aria-label={isFullscreen ? '전체화면 종료' : '전체화면'}
+                title={isFullscreen ? '전체화면 종료' : '전체화면'}
+              >
+                {isFullscreen ? <Minimize size={18} /> : <Expand size={18} />}
+              </button>
+            </div>
+          </div>
+        </>
+      )}
+    </>
   );
 }

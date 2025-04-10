@@ -24,10 +24,10 @@ export function useGetScheduleList({ date }: { date: string }) {
 }
 
 
-export function useGetNodeList() {
+export function useGetNodeList({ memberIds, keyword }: { memberIds: number[], keyword: string }) {
   return useQuery({
-    queryKey: ["node"],
-    queryFn: () => getNodeList()
+    queryKey: ["node", memberIds, keyword],
+    queryFn: () => getNodeList({ memberIds, keyword }),
   })
 }
 
