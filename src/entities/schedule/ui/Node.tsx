@@ -232,10 +232,11 @@ export function Node({ data, isLoading }: NodeProps) {
           fit: true,
           padding: 30,
           randomize: false,
-          componentSpacing: 150, // 컴포넌트 간 간격 증가 (기존: 100)
-          nodeOverlap: 10, // 노드 겹침 감소 (기존: 20)
-          nodeRepulsion: () => 800000, // 반발력 증가 (기존: 400000)
-          idealEdgeLength: () => 150, // 엣지 길이 증가 (기존: 100)
+          componentSpacing: 100,
+          nodeOverlap: 20,
+          nodeRepulsion: () => 400000,
+          idealEdgeLength: () => 100,
+          edgeElasticity: () => 100
         }
       });
 
