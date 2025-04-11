@@ -26,7 +26,7 @@ export function NodeTab() {
   const debouncedSearchKeyword = useDebounce(searchKeyword, 500);
 
 
-  const [selectedMembers, setSelectedMembers] = useState<number[]>([2, 3, 4, 5, 6, 7]);
+  const [selectedMembers, setSelectedMembers] = useState<number[]>([2]);
   const { data: nodeList, isLoading } = useGetNodeList({
     memberIds: selectedMembers,
     keyword: debouncedSearchKeyword
