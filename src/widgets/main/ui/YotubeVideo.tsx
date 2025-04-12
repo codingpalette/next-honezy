@@ -1,6 +1,6 @@
 'use client'
 
-import { useGetYoutubeVideos } from "@/src/entities/youtube"
+import { postYoutubeVideos, useGetYoutubeVideos } from "@/src/entities/youtube"
 import { channels } from "@/src/shared/lib"
 import { youtube_videos } from "@prisma/client"
 import { Youtube } from "lucide-react"
@@ -21,6 +21,11 @@ export function YoutubeVideo({ channel_id }: YoutubeVideoProps) {
 
   const { data: youtubeData, isLoading } = useGetYoutubeVideos({ channel_id: selectedMember })
 
+  // const onclick = () => {
+  //   console.log('click')
+  //   postYoutubeVideos({ channel_id: "UC4fuIYuwKAIw_cW7hP6jf2w" })
+  // }
+
   return (
     <>
       <div className="mt-10">
@@ -38,6 +43,18 @@ export function YoutubeVideo({ channel_id }: YoutubeVideoProps) {
               </button>
             </li>
           ))}
+          <li>
+            <button
+              type="button"
+              className={`w-[40px] h-[40px] rounded-full overflow-hidden border-2  
+                            cursor-pointer transition-transform duration-200 hover:-translate-y-1 ${'UC4fuIYuwKAIw_cW7hP6jf2w' === selectedMember ? 'border-green-600' : 'border-gray-600'}`}
+              onClick={() => setSelectedMember('UC4fuIYuwKAIw_cW7hP6jf2w')}
+            >
+
+              <Image src={`/honeyz.jpg`} width={40} height={40} alt="허니즈" />
+            </button>
+
+          </li>
         </ul>
         <div className="mt-2">
           <div className="w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
