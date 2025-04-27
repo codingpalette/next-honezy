@@ -40,10 +40,10 @@ export function BentoItems({ channelsWithLive }: BentoItemsProps) {
   };
 
 
-  useEffect(() => {
-    console.log('channelsWithLive', channelsWithLive)
-
-  }, [channelsWithLive])
+  // useEffect(() => {
+  //   console.log('channelsWithLive', channelsWithLive)
+  //
+  // }, [channelsWithLive])
 
 
   const onClickEvent = async () => {
@@ -62,7 +62,7 @@ export function BentoItems({ channelsWithLive }: BentoItemsProps) {
       <div className="grid gap-4 lg:grid-cols-3 lg:grid-rows-2">
         {/* 첫 번째 카드에 마우스 이벤트 적용 */}
         <div
-          className="relative lg:row-span-2"
+          className="relative lg:row-span-2 card-container"
           onMouseMove={handleMouseMove}
           onMouseEnter={handleMouseEnter}
           onMouseLeave={handleMouseLeave}
@@ -72,12 +72,15 @@ export function BentoItems({ channelsWithLive }: BentoItemsProps) {
               href="https://www.youtube.com/watch?v=pjeK4zHCkvE"
               target="_blank"
               aria-label="허니즈 'HoneyHeart♡' Official MV"
-              className="block w-full h-full bg-cover bg-center aspect-square lg:aspect-auto"
+              className="block w-full h-full bg-cover bg-center aspect-square lg:aspect-auto relative"
               style={{ backgroundImage: `url('/honeyz4.webp')` }}
-            ></a>
+            >
+              <div className="absolute left-0 bottom-0 text-white p-4 bg-black/50 w-full text-center card-title-overlay">HoneyHeart♡</div>
+            </a>
           </div>
         </div>
 
+        {/* 맴버 라이브 현황 */}
         <div className="relative max-lg:row-start-1">
           <div className="card bg-base-100 shadow-sm">
             <ul className="card-body">
@@ -109,7 +112,7 @@ export function BentoItems({ channelsWithLive }: BentoItemsProps) {
 
         {/* 두 번째 카드에 마우스 이벤트 적용 */}
         <div
-          className="relative max-lg:row-start-3 lg:col-start-2 lg:row-start-2"
+          className="relative max-lg:row-start-3 lg:col-start-2 lg:row-start-2 card-container"
           onMouseMove={handleMouseMove}
           onMouseEnter={handleMouseEnter}
           onMouseLeave={handleMouseLeave}
@@ -119,16 +122,18 @@ export function BentoItems({ channelsWithLive }: BentoItemsProps) {
               href="https://www.youtube.com/watch?v=Gr8O8fkRPpI"
               target="_blank"
               aria-label="허니즈 '사랑받을 준비완료!♡' Official MV"
-              className="block w-full h-full bg-cover bg-center aspect-square lg:aspect-auto"
+              className="block w-full h-full bg-cover bg-center aspect-square lg:aspect-auto relative"
               style={{ backgroundImage: `url('/honeyz1.jpg')` }}
-            ></a>
+            >
+              <div className="absolute left-0 bottom-0 text-white p-4 bg-black/50 w-full text-center card-title-overlay">사랑받을 준비완료!♡</div>
+            </a>
           </div>
         </div>
 
         {/* 세 번째 카드에 마우스 이벤트 적용 */}
 
         <div
-          className="relative lg:row-span-2"
+          className="relative lg:row-span-2 card-container"
           onMouseMove={handleMouseMove}
           onMouseEnter={handleMouseEnter}
           onMouseLeave={handleMouseLeave}
@@ -138,9 +143,11 @@ export function BentoItems({ channelsWithLive }: BentoItemsProps) {
               href="https://www.youtube.com/watch?v=GpTUdau8Uzs"
               target="_blank"
               aria-label="첫 만남은 계획대로 되지 않아 (TWS 투어스) | 허니즈 Cover"
-              className="block w-full h-full bg-cover bg-center aspect-square lg:aspect-auto"
+              className="block w-full h-full bg-cover bg-center aspect-square lg:aspect-auto relative"
               style={{ backgroundImage: `url('/honeyz2.jpg')` }}
-            ></a>
+            >
+              <div className="absolute left-0 bottom-0 text-white p-4 bg-black/50 w-full text-center card-title-overlay">첫 만남은 계획대로 되지 않아</div>
+            </a>
           </div>
         </div>
       </div>
