@@ -21,14 +21,15 @@ export function YoutubeVideo({ channel_id }: YoutubeVideoProps) {
 
   const { data: youtubeData, isLoading } = useGetYoutubeVideos({ channel_id: selectedMember })
 
-  // const onclick = () => {
-  //   console.log('click')
-  //   postYoutubeVideos({ channel_id: "UC4fuIYuwKAIw_cW7hP6jf2w" })
-  // }
+  const onclick = () => {
+    console.log('click')
+    postYoutubeVideos({ channel_id: "UCicn6yqObjHrCKWkKL70ALg" })
+  }
 
   return (
     <>
       <div className="mt-10">
+        {/* <button onClick={onclick}>d</button> */}
         <h2 className="text-center text-xl font-semibold mb-2">유튜브 영상</h2>
         <ul className="flex gap-4 items-center flex-wrap">
           {members.map((member) => (

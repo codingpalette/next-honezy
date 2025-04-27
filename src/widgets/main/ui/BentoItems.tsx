@@ -69,11 +69,11 @@ export function BentoItems({ channelsWithLive }: BentoItemsProps) {
         >
           <div className="card bg-base-100 h-full shadow-sm overflow-hidden">
             <a
-              href="https://www.youtube.com/watch?v=GpTUdau8Uzs"
+              href="https://www.youtube.com/watch?v=pjeK4zHCkvE"
               target="_blank"
-              aria-label="첫 만남은 계획대로 되지 않아 (TWS 투어스) | 허니즈 Cover"
+              aria-label="허니즈 'HoneyHeart♡' Official MV"
               className="block w-full h-full bg-cover bg-center aspect-square lg:aspect-auto"
-              style={{ backgroundImage: `url('/honeyz2.jpg')` }}
+              style={{ backgroundImage: `url('/honeyz4.webp')` }}
             ></a>
           </div>
         </div>
@@ -126,6 +126,7 @@ export function BentoItems({ channelsWithLive }: BentoItemsProps) {
         </div>
 
         {/* 세 번째 카드에 마우스 이벤트 적용 */}
+
         <div
           className="relative lg:row-span-2"
           onMouseMove={handleMouseMove}
@@ -134,11 +135,11 @@ export function BentoItems({ channelsWithLive }: BentoItemsProps) {
         >
           <div className="card bg-base-100 h-full shadow-sm overflow-hidden">
             <a
-              href="https://www.youtube.com/watch?v=29bvQQjf6vQ"
+              href="https://www.youtube.com/watch?v=GpTUdau8Uzs"
               target="_blank"
-              aria-label="[HONEYZ] It's Beginning To Look A Lot Like Christmas (Michael Bublé)"
+              aria-label="첫 만남은 계획대로 되지 않아 (TWS 투어스) | 허니즈 Cover"
               className="block w-full h-full bg-cover bg-center aspect-square lg:aspect-auto"
-              style={{ backgroundImage: `url('/honeyz3.jpg')` }}
+              style={{ backgroundImage: `url('/honeyz2.jpg')` }}
             ></a>
           </div>
         </div>

@@ -33,7 +33,7 @@ export function ContentLayout({
       </div>
 
       {/* Introduction Section */}
-      <div className="">
+      <div className="w-full">
         <div className="card bg-base-100 shadow mb-8">
           <div className="card-body w-full mx-auto px-4 lg:max-w-7xl lg:px-8">
             <h2 className="card-title text-2xl">게임 소개</h2>
@@ -49,7 +49,7 @@ export function ContentLayout({
         </div>
 
         {/* Game Content */}
-        <div className="flex justify-center">
+        <div className="flex justify-center pb-12">
           {children}
         </div>
       </div>
