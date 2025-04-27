@@ -271,10 +271,10 @@ export function Node({ data, isLoading }: NodeProps) {
         connectedNodes.addClass('highlighted');
 
         // 2단계 연결
-        const secondDegreeEdges = connectedNodes.connectedEdges().difference(connectedEdges);
-        secondDegreeEdges.addClass('highlighted');
-        const secondDegreeNodes = secondDegreeEdges.connectedNodes().difference(connectedNodes).difference(node);
-        secondDegreeNodes.addClass('highlighted');
+        // const secondDegreeEdges = connectedNodes.connectedEdges().difference(connectedEdges);
+        // secondDegreeEdges.addClass('highlighted');
+        // const secondDegreeNodes = secondDegreeEdges.connectedNodes().difference(connectedNodes).difference(node);
+        // secondDegreeNodes.addClass('highlighted');
       });
 
       // 노드 호버 이벤트 (마우스 올림)
@@ -287,10 +287,10 @@ export function Node({ data, isLoading }: NodeProps) {
           connectedEdges.addClass('hover');
           const connectedNodes = connectedEdges.connectedNodes();
           connectedNodes.addClass('hover');
-          const secondDegreeEdges = connectedNodes.connectedEdges().difference(connectedEdges);
-          secondDegreeEdges.addClass('hover');
-          const secondDegreeNodes = secondDegreeEdges.connectedNodes().difference(connectedNodes).difference(node);
-          secondDegreeNodes.addClass('hover');
+          // const secondDegreeEdges = connectedNodes.connectedEdges().difference(connectedEdges);
+          // secondDegreeEdges.addClass('hover');
+          // const secondDegreeNodes = secondDegreeEdges.connectedNodes().difference(connectedNodes).difference(node);
+          // secondDegreeNodes.addClass('hover');
         }
       });
 
