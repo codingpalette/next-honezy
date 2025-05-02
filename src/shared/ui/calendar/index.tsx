@@ -3,7 +3,7 @@
 import React, { useState, useEffect, Fragment } from "react";
 import dayjs from "dayjs";
 import "dayjs/locale/ko";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronLeft, ChevronRight, Video } from "lucide-react";
 import { members } from "@prisma/client";
 import { useGetScheduleList } from "@/src/entities/schedule";
 
@@ -169,13 +169,17 @@ export function Calendar({
                                       <a
                                         href={event.video_link}
                                         target="_blank"
-                                        className={`text-xs  p-1 rounded font-semibold hover:opacity-80}`}
+                                        className="text-xs  p-1 rounded font-semibold hover:opacity-80 flex items-start gap-2"
                                         style={{
                                           backgroundColor: event.member.color || "#e5e7eb", // 기본값: gray-200
                                           color: color, // 텍스트 색상 (어두운 배경 대비)
                                         }}
                                       >
-                                        {`${event.member.name}:${event.title} - ${event.time}`}
+
+                                        <p className="">
+                                          {`${event.member.name}:${event.title} - ${event.time}`}
+                                        </p>
+                                        <Video className="w-4 h-4 flex-none" />
 
                                       </a>
 
