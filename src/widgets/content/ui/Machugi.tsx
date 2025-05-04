@@ -65,7 +65,6 @@ export function Machugi() {
     <div className=" w-full bg-zinc-100">
       <div className="max-w-3xl mx-auto bg-base-100 shadow-xl rounded-lg p-8">
         <h1 className="text-3xl font-bold text-center mb-6">제1회 허니즈 모의고사</h1>
-        <p className="text-left text-gray-600 mb-4">허니츄러스</p>
 
         {/* 문제 목록 */}
         {questions.map((question) => (
