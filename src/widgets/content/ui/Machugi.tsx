@@ -1,7 +1,7 @@
 'use client';
 
-import React, { useState } from "react";
-import { HonezyChurros } from "../lib/machugi";
+import React, { useState, useRef } from "react";
+import { HonezyChurros, answer } from "../lib/machugi";
 
 // 문제 데이터 타입 정의
 interface Question {
@@ -12,22 +12,6 @@ interface Question {
   example?: string; // 예시
 }
 
-// 샘플 문제 데이터
-// const questions: Question[] = [
-//   {
-//     id: 1,
-//     text: "1. 다음 중 프로그래밍 언어가 아닌 것은?",
-//     options: ["Python", "Java", "HTML", "C++"],
-//     type: "multiple",
-//     example: "HTML은 마크업 언어로, 프로그래밍 언어가 아닙니다.",
-//   },
-//   {
-//     id: 2,
-//     text: "2. TypeScript의 주요 특징을 설명하세요.",
-//     type: "short",
-//     example: "TypeScript는 정적 타입을 지원하며, JavaScript의 슈퍼셋입니다.",
-//   },
-// ];
 
 // 답변 데이터 타입 정의
 interface Answer {
@@ -37,10 +21,18 @@ interface Answer {
 
 export function Machugi() {
   const [questions, setQuestions] = useState<Question[]>(HonezyChurros);
-
-
+  
+  // 모달 상태 관리
+  const warningModalRef = useRef<HTMLDialogElement>(null);
+  const resultModalRef = useRef<HTMLDialogElement>(null);
+  
   // 답변 상태 관리
   const [answers, setAnswers] = useState<Answer[]>([]);
+  const [scoreResult, setScoreResult] = useState<{
+    score: number;
+    correctCount: number;
+    totalQuestions: number;
+  } | null>(null);
 
   // 답변 업데이트 핸들러
   const handleAnswerChange = (questionId: number, value: string) => {
@@ -54,11 +46,46 @@ export function Machugi() {
       return [...prev, { questionId, value }];
     });
   };
+  
+  // 다시 풀기 핸들러
+  const handleReset = () => {
+    setAnswers([]);
+    setScoreResult(null);
+    resultModalRef.current?.close();
+  };
 
   // 제출 핸들러
   const handleSubmit = () => {
+    // 모든 문제를 풀었는지 확인
+    if (answers.length < questions.length) {
+      // 모달 띄우기
+      warningModalRef.current?.showModal();
+      return;
+    }
+
+    // 점수 계산
+    let correctCount = 0;
+    const totalQuestions = questions.length;
+    
+    questions.forEach((question, index) => {
+      const userAnswer = answers.find(a => a.questionId === question.id);
+      if (userAnswer) {
+        const answerIndex = question.options?.findIndex(opt => opt === userAnswer.value);
+        if (answerIndex !== undefined && answerIndex + 1 === answer[index]) {
+          correctCount++;
+        }
+      }
+    });
+
+    const score = Math.round((correctCount / totalQuestions) * 100);
+    setScoreResult({
+      score,
+      correctCount,
+      totalQuestions
+    });
+    
     console.log("제출된 답변:", answers);
-    alert("시험지가 제출되었습니다!");
+    resultModalRef.current?.showModal();
   };
 
   return (
@@ -113,6 +140,38 @@ export function Machugi() {
             제출하기
           </button>
         </div>
+
+        {/* 경고 모달 - 모든 문제를 풀지 않았을 때 */}
+        <dialog ref={warningModalRef} className="modal modal-bottom sm:modal-middle">
+          <div className="modal-box">
+            <h3 className="font-bold text-lg">경고!</h3>
+            <p className="py-4">모든 문제를 풀어주세요!</p>
+            <div className="modal-action">
+              <form method="dialog">
+                <button className="btn">확인</button>
+              </form>
+            </div>
+          </div>
+        </dialog>
+
+        {/* 결과 모달 - 점수 표시 */}
+        <dialog ref={resultModalRef} className="modal modal-bottom sm:modal-middle">
+          <div className="modal-box">
+            <h3 className="font-bold text-lg">시험 결과</h3>
+            {scoreResult && (
+              <div className="py-4">
+                <p className="text-2xl font-bold text-center mb-2">총점: {scoreResult.score}점</p>
+                <p className="text-center">{scoreResult.correctCount}/{scoreResult.totalQuestions}문제 정답</p>
+              </div>
+            )}
+            <div className="modal-action">
+              <form method="dialog" className="flex gap-2">
+                <button className="btn btn-secondary" onClick={handleReset}>다시 풀기</button>
+                <button className="btn">닫기</button>
+              </form>
+            </div>
+          </div>
+        </dialog>
       </div>
     </div>
   );
