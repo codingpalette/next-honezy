@@ -31,9 +31,9 @@ export function Header() {
               <li>
                 <Link href="/schedule">스케줄</Link>
               </li>
-              <li>
-                <Link href="/content">컨텐츠</Link>
-              </li>
+              {/* <li> */}
+              {/*   <Link href="/content">컨텐츠</Link> */}
+              {/* </li> */}
             </ul>
           </div>
           {/* 테마 토글 */}
@@ -88,9 +88,9 @@ export function Header() {
                   <li>
                     <Link href="/schedule" className="py-3">스케줄</Link>
                   </li>
-                  <li>
-                    <Link href="/content" className="py-3">컨텐츠</Link>
-                  </li>
+                  {/* <li> */}
+                  {/*   <Link href="/content" className="py-3">컨텐츠</Link> */}
+                  {/* </li> */}
                 </ul>
               </div>
             </div>

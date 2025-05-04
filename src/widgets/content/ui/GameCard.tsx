@@ -42,7 +42,7 @@ export function GameCard({ id, title, description, image, tags, disabled = false
             <button className="btn btn-disabled">준비중</button>
           ) : (
             <Link href={`/content/${id}`} className="btn btn-soft">
-              게임하기
+              바로가기
             </Link>
           )}
         </div>

@@ -11,6 +11,13 @@ export const metadata: Metadata = {
 
 const games = [
   {
+    id: "machugi",
+    title: "허니즈 모의고사",
+    description: `허니츄러스에 대한 다양한 질문을 풀어보세요!`,
+    image: "",
+    tags: ["퀴즈", "허니즈"],
+  },
+  {
     id: "shooting",
     title: "안아줘요 허츄!",
     description: `허니츄러스에게 다가오는 젤리를 하트를 쏴서 맞추는 게임입니다.`,
