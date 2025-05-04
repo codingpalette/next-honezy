@@ -1,6 +1,14 @@
 import { ContentLayout } from "@/src/shared/ui";
 import { Machugi } from "@/src/widgets/content";
 
+import { Metadata, ResolvingMetadata } from "next";
+
+export async function generateMetadata(): Promise<Metadata> {
+  return {
+    title: "허니즈로그 - 허니즈 모의고사",
+  };
+}
+
 
 export default function MachugiPage() {
   return (
