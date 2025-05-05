@@ -45,14 +45,14 @@ export const HonezyChurros: Question[] = [
   },
   {
     id: 6,
-    text: "23. 아야가 롤유치원 에서 맡고 있는 포지션은?",
+    text: "6. 아야가 롤유치원 에서 맡고 있는 포지션은?",
     options: ["탑", "미드", "원딜", "서폿"],
     type: "multiple",
     example: ""
   },
   {
     id: 7,
-    text: "6. 아야의 별명 '아야냥'의 유래는?",
+    text: "7. 아야의 별명 '아야냥'의 유래는?",
     options: [
       "고양이처럼 귀여운 외모 때문",
       "팬들이 붙인 애칭",
