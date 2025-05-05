@@ -140,7 +140,7 @@ export function Machugi() {
               {question.type === "multiple" && question.options && (
                 <div className="form-control flex flex-col space-y-2">
                   {question.options.map((option, index) => (
-                    <label key={index} className="label cursor-pointer flex items-center space-x-2">
+                    <label key={index} className="label cursor-pointer flex items-center space-x-2 whitespace-pre-wrap">
                       <input
                         type="radio"
                         name={`question-${question.id}`}
@@ -151,7 +151,7 @@ export function Machugi() {
                           handleAnswerChange(question.id, option);
                         }}
                       />
-                      <span className="label-text">{option}</span>
+                      <span className="label-text ">{option}</span>
                     </label>
                   ))}
                 </div>
