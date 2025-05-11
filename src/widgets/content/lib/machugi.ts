@@ -133,7 +133,7 @@ export const HonezyChurros: Question[] = [
   {
     id: 16,
     text: "16. 디디디용은 방송중에 재채기를 많이 하는데 그 때 채팅장에서 올라오는 채팅은?",
-    options: ["블래슈", "호~~~", "늦네에..", "143"],
+    options: ["블레슈", "호~~~", "늦네에..", "143"],
     type: "multiple",
     example: ""
   },
