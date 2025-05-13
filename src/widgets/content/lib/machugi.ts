@@ -132,7 +132,7 @@ export const HonezyChurros: Question[] = [
   },
   {
     id: 16,
-    text: "16. 디디디용은 방송중에 재채기를 많이 하는데 그 때 채팅장에서 올라오는 채팅은?",
+    text: "16. 디디디용은 방송 중에 재채기를 많이 하는데 그때 채팅장에서 올라오는 채팅은?",
     options: ["블레슈", "호~~~", "늦네에..", "143"],
     type: "multiple",
     example: ""
@@ -153,7 +153,7 @@ export const HonezyChurros: Question[] = [
   },
   {
     id: 19,
-    text: "19. 허니즈 맴머들과 R.E.P.O. 합방 중 혼자 남겨진 오화요가 허니츄러스를 만나고 했던 말은?",
+    text: "19. 허니즈 맴버들과 R.E.P.O. 합방 중 혼자 남겨진 오화요가 허니츄러스를 만나고 했던 말은?",
     options: ["냐냐냐냐냐냐냐냐", "호롤롤로", "언니", "커쉬"],
     type: "multiple",
     example: ""
@@ -174,7 +174,7 @@ export const HonezyChurros: Question[] = [
   },
   {
     id: 22,
-    text: "22. 망내는 허니츄러스 집에서 술을 훔쳐왔는데 술의 종류는?",
+    text: "22. 망내는 허니츄러스가 회사에 숨겨둔 술을 훔쳐왔는데 술의 종류는?",
     options: ["블랙라벨", "블루라벨", "옐로라벨", "그린라벨"],
     type: "multiple",
     example: ""
