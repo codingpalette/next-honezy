@@ -70,9 +70,9 @@ export async function getScheduleList({ date }: { date: string }) {
 export async function getNodeList({ memberIds, keyword }: { memberIds: number[], keyword: string }) {
   const nodes = await db.schedule.findMany({
     where: {
-      video_link: {
-        not: null, // video_link가 있는 스케줄만 조회
-      },
+      // video_link: {
+      //   not: null, // video_link가 있는 스케줄만 조회
+      // },
       member_id: {
         in: memberIds.map(id => BigInt(id)), // 선택된 멤버 ID로 필터링
       },

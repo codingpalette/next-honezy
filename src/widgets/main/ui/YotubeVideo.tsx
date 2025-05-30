@@ -23,7 +23,7 @@ export function YoutubeVideo({ channel_id }: YoutubeVideoProps) {
 
   const onclick = () => {
     console.log('click')
-    postYoutubeVideos({ channel_id: "UCicn6yqObjHrCKWkKL70ALg" })
+    postYoutubeVideos({ channel_id: "UC4fuIYuwKAIw_cW7hP6jf2w" })
   }
 
   return (

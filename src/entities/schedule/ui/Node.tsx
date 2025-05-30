@@ -247,10 +247,10 @@ export function Node({ data, isLoading }: NodeProps) {
 
         // video_link가 있는지 확인하고 있으면 이동
         const videoLink = node.data('video_link');
-        if (videoLink) {
-          window.open(videoLink, '_blank');
-          return;
-        }
+        // if (videoLink) {
+        //   window.open(videoLink, '_blank');
+        //   return;
+        // }
 
         // 이미 하이라이트된 노드를 클릭한 경우 하이라이트 제거
         if (node.hasClass('highlighted')) {

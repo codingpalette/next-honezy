@@ -163,45 +163,16 @@ export function Calendar({
                               }
 
                               return (
-                                <Fragment key={event.id}>
-                                  {event.video_link ? (
-                                    <>
-                                      <a
-                                        href={event.video_link}
-                                        target="_blank"
-                                        className="text-xs  p-1 rounded font-semibold hover:opacity-80 flex items-start gap-2"
-                                        style={{
-                                          backgroundColor: event.member.color || "#e5e7eb", // 기본값: gray-200
-                                          color: color, // 텍스트 색상 (어두운 배경 대비)
-                                        }}
-                                      >
-
-                                        <p className="">
-                                          {`${event.member.name}:${event.title} - ${event.time}`}
-                                        </p>
-                                        <Video className="w-4 h-4 flex-none" />
-
-                                      </a>
-
-                                    </>
-
-                                  ) : (
-                                    <>
-                                      <div
-                                        className={`text-xs  p-1 rounded font-semibold ${onEventClick ? "cursor-pointer hover:opacity-80" : ""
-                                          }`}
-                                        style={{
-                                          backgroundColor: event.member.color || "#e5e7eb", // 기본값: gray-200
-                                          color: color, // 텍스트 색상 (어두운 배경 대비)
-                                        }}
-                                      >
-                                        {`${event.member.name}:${event.title} - ${event.time}`}
-                                      </div>
-
-                                    </>
-                                  )}
-                                </Fragment>
-
+                                <div
+                                  className={`text-xs  p-1 rounded font-semibold ${onEventClick ? "cursor-pointer hover:opacity-80" : ""
+                                    }`}
+                                  style={{
+                                    backgroundColor: event.member.color || "#e5e7eb", // 기본값: gray-200
+                                    color: color, // 텍스트 색상 (어두운 배경 대비)
+                                  }}
+                                >
+                                  {`${event.member.name}:${event.title} - ${event.time}`}
+                                </div>
                               )
                             }
                             )}
