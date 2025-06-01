@@ -52,16 +52,21 @@ export function MusicList() {
   };
 
   const handlePlay = (music: youtube_music) => {
+    console.log('a')
     if (playingMusic?.id === music.id) {
+      console.log('b')
       if (playing) {
+        console.log('c')
         playerRef.current?.pauseVideo();
         setPlaying(false);
       } else {
+        console.log('d')
         playerRef.current?.playVideo();
         playerRef.current?.unMute();
         setPlaying(true);
       }
     } else {
+      console.log('e')
       setPlayingMusic(music);
       setPlaying(true);
       setProgress(0);
@@ -69,8 +74,10 @@ export function MusicList() {
 
       // 플레이어가 아직 초기화되지 않았다면 초기화 후 바로 재생
       if (!playerRef.current && (window as any).YT?.Player) {
+        console.log('f')
         initializePlayer(music.link);
       } else if (playerRef.current) {
+        console.log('g')
         playerRef.current.loadVideoById(extractVideoId(music.link)); // 새 비디오 로드 후 재생
         playerRef.current.playVideo();
         playerRef.current.unMute();
@@ -359,11 +366,11 @@ export function MusicList() {
               </svg>
             </button>
           </div>
-          <div style={{ position: 'absolute', left: '-9999px', width: 0, height: 0 }}>
-            <div id="youtube-player"></div>
-          </div>
         </div>
       )}
+      <div style={{ position: 'fixed', left: '0', top: '0', width: '500px', height: '500px', zIndex: '1000' }}>
+        <div id="youtube-player" style={{ width: '100%', height: '100%' }}></div>
+      </div>
 
     </>
   );
