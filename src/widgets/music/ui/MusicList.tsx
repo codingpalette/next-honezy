@@ -133,6 +133,15 @@ export function MusicList() {
     });
   };
 
+  // 플레이어 닫기 함수 
+  const cloaePlayer = () => {
+    if (playerRef.current) {
+      playerRef.current.destroy(); // 기존 플레이어 제거
+    }
+    setPlayingMusic(null);
+
+  }
+
   const formatTime = (seconds: number) => {
     const minutes = Math.floor(seconds / 60);
     const secs = Math.floor(seconds % 60);
@@ -354,7 +363,7 @@ export function MusicList() {
             </div>
             <button
               className="btn btn-ghost btn-circle btn-sm sm:btn-md flex-shrink-0"
-              onClick={() => setPlayingMusic(null)}
+              onClick={cloaePlayer}
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -368,11 +377,11 @@ export function MusicList() {
               </svg>
             </button>
           </div>
-          <div style={{ position: 'fixed', left: '-9999px', top: '-9999px', width: '1px', height: '1px' }}>
-            <div id="youtube-player"></div>
-          </div>
         </div>
       )}
+      <div style={{ position: 'fixed', left: '-9999px', top: '-9999px', width: '1px', height: '1px' }}>
+        <div id="youtube-player"></div>
+      </div>
 
 
     </>
