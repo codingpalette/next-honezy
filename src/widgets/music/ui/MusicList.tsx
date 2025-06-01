@@ -160,6 +160,7 @@ export function MusicList() {
         console.log('currentTime', currentTime)
 
         if (currentTime === 0 && check && retryCount < maxRetries) {
+          console.log('cccc')
           playerRef.current?.playVideo();
           retryCount++;
         } else if (currentTime > 0 || retryCount >= maxRetries) {
