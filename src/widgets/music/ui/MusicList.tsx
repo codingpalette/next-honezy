@@ -71,13 +71,13 @@ export function MusicList() {
         initializePlayer(music.link, true);
         setTimeout(() => {
           playerRef.current?.playVideo();
-        }, 100)
+        }, 500)
       } else if (playerRef.current) {
         playerRef.current.loadVideoById(extractVideoId(music.link));
         // 사용자 인터랙션 컨텍스트에서 즉시 재생 시도
         setTimeout(() => {
           playerRef.current?.playVideo();
-        }, 100);
+        }, 500);
       }
     }
   };
