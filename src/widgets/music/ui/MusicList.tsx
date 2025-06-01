@@ -68,10 +68,14 @@ export function MusicList() {
 
       // 플레이어가 아직 초기화되지 않았다면 초기화
       if (!playerRef.current && (window as any).YT?.Player) {
-        initializePlayer(music.link, true);
+        console.log('111')
+        setTimeout(() => {
+          initializePlayer(music.link, true);
+        }, 100)
       } else if (playerRef.current) {
         playerRef.current.loadVideoById(extractVideoId(music.link));
         // 사용자 인터랙션 컨텍스트에서 즉시 재생 시도
+        console.log('222')
         setTimeout(() => {
           playerRef.current?.playVideo();
         }, 100);
