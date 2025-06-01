@@ -52,41 +52,35 @@ export function MusicList() {
   };
 
   const handlePlay = (music: youtube_music) => {
-    console.log('a')
     if (playingMusic?.id === music.id) {
-      console.log('b')
       if (playing) {
-        console.log('c')
         playerRef.current?.pauseVideo();
         setPlaying(false);
       } else {
-        console.log('d')
         playerRef.current?.playVideo();
-        playerRef.current?.unMute();
         setPlaying(true);
       }
     } else {
-      console.log('e')
       setPlayingMusic(music);
       setPlaying(true);
       setProgress(0);
       setMuted(false);
 
-      // 플레이어가 아직 초기화되지 않았다면 초기화 후 바로 재생
+      // 플레이어가 아직 초기화되지 않았다면 초기화
       if (!playerRef.current && (window as any).YT?.Player) {
-        console.log('f')
-        initializePlayer(music.link);
+        initializePlayer(music.link, true);
       } else if (playerRef.current) {
-        console.log('g')
-        playerRef.current.loadVideoById(extractVideoId(music.link)); // 새 비디오 로드 후 재생
-        playerRef.current.playVideo();
-        playerRef.current.unMute();
+        playerRef.current.loadVideoById(extractVideoId(music.link));
+        // 사용자 인터랙션 컨텍스트에서 즉시 재생 시도
+        setTimeout(() => {
+          playerRef.current?.playVideo();
+        }, 100);
       }
     }
   };
 
   // 플레이어 초기화 함수
-  const initializePlayer = (url: string) => {
+  const initializePlayer = (url: string, shouldPlay = false) => {
     if (playerRef.current) {
       playerRef.current.destroy(); // 기존 플레이어 제거
     }
@@ -97,15 +91,20 @@ export function MusicList() {
       videoId: extractVideoId(url),
       playerVars: {
         playsinline: 1, // 모바일에서 인라인 재생
-        autoplay: 1, // 자동 재생 활성화
-        mute: 1, // 초기에는 음소거 상태로 시작
+        autoplay: 0, // 자동 재생 비활성화 (모바일 호환성)
+        mute: 0, // 음소거 비활성화
+        controls: 0,
+        disablekb: 1,
+        fs: 0,
+        modestbranding: 1,
+        rel: 0,
       },
       events: {
         onReady: (event: any) => {
           setDuration(event.target.getDuration());
-          if (playing) {
-            event.target.playVideo(); // 준비되면 바로 재생
-            event.target.unMute(); // 재생 시작 시 음소거 해제
+          if (shouldPlay || playing) {
+            // 사용자 인터랙션 컨텍스트에서 재생 시도
+            event.target.playVideo();
           }
         },
         onStateChange: (event: any) => {
@@ -368,9 +367,13 @@ export function MusicList() {
           </div>
         </div>
       )}
-      <div style={{ position: 'fixed', left: '0', top: '0', width: '500px', height: '500px', zIndex: '1000' }}>
+
+      <div style={{ position: 'fixed', left: '0', top: '0', width: '100px', height: '100px', zIndex: '1000' }}>
         <div id="youtube-player" style={{ width: '100%', height: '100%' }}></div>
       </div>
+      {/* <div style={{ position: 'fixed', left: '-9999px', top: '-9999px', width: '1px', height: '1px' }}> */}
+      {/*   <div id="youtube-player"></div> */}
+      {/* </div> */}
 
     </>
   );

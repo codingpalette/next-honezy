@@ -82,6 +82,5 @@ export async function getYoutubeMusic({ channel_id }: { channel_id?: string }) {
     },
     include: { members: true }, // 선택사항: 관계된 멤버 정보 포함
   });
-  console.log(musics)
   return musics;
 }
