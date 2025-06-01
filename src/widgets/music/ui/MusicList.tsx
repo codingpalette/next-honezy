@@ -5,6 +5,7 @@ import { channels } from "@/src/shared/lib";
 import Image from "next/image";
 import { useState, useRef, useEffect } from "react";
 import { youtube_music } from "@prisma/client";
+import { MusidModal } from "./MusicModal";
 
 export function MusicList() {
   const [selectedMember, setSelectedMember] = useState('');
@@ -402,6 +403,15 @@ export function MusicList() {
             </div>
             <button
               className="btn btn-ghost btn-circle btn-sm sm:btn-md flex-shrink-0"
+              onClick={() => (document.getElementById('my_modal_3') as HTMLDialogElement)?.showModal()}
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 19.5h3m-6.75 2.25h10.5a2.25 2.25 0 0 0 2.25-2.25v-15a2.25 2.25 0 0 0-2.25-2.25H6.75A2.25 2.25 0 0 0 4.5 4.5v15a2.25 2.25 0 0 0 2.25 2.25Z" />
+              </svg>
+            </button>
+
+            <button
+              className="btn btn-ghost btn-circle btn-sm sm:btn-md flex-shrink-0"
               onClick={cloaePlayer}
             >
               <svg
@@ -421,6 +431,47 @@ export function MusicList() {
       <div style={{ position: 'fixed', left: '-9999', top: '-9999', width: '150px', height: '150px' }}>
         <div id="youtube-player" style={{ width: '100%', height: '100%' }}></div>
       </div>
+      <MusidModal
+        playingMusic={playingMusic}
+        onPlayPause={() => {
+          if (playing) {
+            playerRef.current?.pauseVideo();
+            setPlaying(false);
+          } else {
+            playerRef.current?.playVideo();
+            setPlaying(true);
+          }
+        }}
+        onPrevious={() => {
+          if (data && playingMusic) {
+            const currentIndex = data.findIndex(music => music.id === playingMusic.id);
+            if (currentIndex > 0) {
+              handlePlay(data[currentIndex - 1]);
+            }
+          }
+        }}
+        onNext={() => {
+          if (data && playingMusic) {
+            const currentIndex = data.findIndex(music => music.id === playingMusic.id);
+            if (currentIndex < data.length - 1) {
+              handlePlay(data[currentIndex + 1]);
+            }
+          }
+        }}
+        onClose={() => {
+          (document.getElementById('my_modal_3') as HTMLDialogElement)?.close();
+        }}
+        playing={playing}
+        progress={progress}
+        duration={duration}
+        onProgressChange={(time) => {
+          setProgress(time);
+          if (playerRef.current) {
+            playerRef.current.seekTo(time);
+          }
+        }}
+        formatTime={formatTime}
+      />
 
 
     </>
