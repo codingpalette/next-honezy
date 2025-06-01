@@ -58,6 +58,7 @@ export function MusicList() {
         setPlaying(false);
       } else {
         playerRef.current?.playVideo();
+        playerRef.current?.unMute();
         setPlaying(true);
       }
     } else {
@@ -72,6 +73,7 @@ export function MusicList() {
       } else if (playerRef.current) {
         playerRef.current.loadVideoById(extractVideoId(music.link)); // 새 비디오 로드 후 재생
         playerRef.current.playVideo();
+        playerRef.current.unMute();
       }
     }
   };
@@ -88,12 +90,15 @@ export function MusicList() {
       videoId: extractVideoId(url),
       playerVars: {
         playsinline: 1, // 모바일에서 인라인 재생
+        autoplay: 1, // 자동 재생 활성화
+        mute: 1, // 초기에는 음소거 상태로 시작
       },
       events: {
         onReady: (event: any) => {
           setDuration(event.target.getDuration());
           if (playing) {
             event.target.playVideo(); // 준비되면 바로 재생
+            event.target.unMute(); // 재생 시작 시 음소거 해제
           }
         },
         onStateChange: (event: any) => {
@@ -118,9 +123,6 @@ export function MusicList() {
       },
     });
   };
-
-
-
 
   const formatTime = (seconds: number) => {
     const minutes = Math.floor(seconds / 60);
