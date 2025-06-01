@@ -107,7 +107,9 @@ export function MusicList() {
           setDuration(event.target.getDuration());
           if (shouldPlay || playing) {
             // 사용자 인터랙션 컨텍스트에서 재생 시도
-            event.target.playVideo();
+            setTimeout(() => {
+              event.target.playVideo();
+            }, 300)
           }
         },
         onStateChange: (event: any) => {
