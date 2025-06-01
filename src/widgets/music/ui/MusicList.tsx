@@ -161,9 +161,16 @@ export function MusicList() {
         console.log('playingMusic', playingMusic)
 
         if (currentTime === 0 && check && retryCount < maxRetries) {
-          console.log('cccc')
-          // playerRef.current?.playVideo();
-          initializePlayer(playingMusic.link, true);
+          // 모바일에서는 seekTo를 먼저 시도
+          if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+            playerRef.current?.seekTo(0.1);
+            setTimeout(() => {
+              playerRef.current?.playVideo();
+            }, 100);
+          } else {
+            playerRef.current?.playVideo();
+          }
+
           retryCount++;
         } else if (currentTime > 0 || retryCount >= maxRetries) {
           check = false;
