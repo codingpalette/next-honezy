@@ -107,7 +107,7 @@ export function MusicList() {
           setDuration(event.target.getDuration());
           if (shouldPlay || playing) {
             // 사용자 인터랙션 컨텍스트에서 재생 시도
-            // event.target.playVideo();
+            event.target.playVideo();
           }
         },
         onStateChange: (event: any) => {
@@ -158,10 +158,12 @@ export function MusicList() {
       const timeInterval = setInterval(() => {
         const currentTime = playerRef.current?.getCurrentTime();
         console.log('currentTime', currentTime)
+        console.log('playingMusic', playingMusic)
 
         if (currentTime === 0 && check && retryCount < maxRetries) {
           console.log('cccc')
-          playerRef.current?.playVideo();
+          // playerRef.current?.playVideo();
+          initializePlayer(playingMusic.link, true);
           retryCount++;
         } else if (currentTime > 0 || retryCount >= maxRetries) {
           check = false;
