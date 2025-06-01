@@ -68,7 +68,6 @@ export function MusicList() {
 
       // 플레이어가 아직 초기화되지 않았다면 초기화
       if (!playerRef.current && (window as any).YT?.Player) {
-        console.log('111')
         initializePlayer(music.link, true);
         setTimeout(() => {
           playerRef.current?.playVideo();
@@ -76,7 +75,6 @@ export function MusicList() {
       } else if (playerRef.current) {
         playerRef.current.loadVideoById(extractVideoId(music.link));
         // 사용자 인터랙션 컨텍스트에서 즉시 재생 시도
-        console.log('222')
         setTimeout(() => {
           playerRef.current?.playVideo();
         }, 100);
@@ -370,15 +368,12 @@ export function MusicList() {
               </svg>
             </button>
           </div>
+          <div style={{ position: 'fixed', left: '-9999px', top: '-9999px', width: '1px', height: '1px' }}>
+            <div id="youtube-player"></div>
+          </div>
         </div>
       )}
 
-      <div style={{ position: 'fixed', left: '0', top: '0', width: '100px', height: '100px', zIndex: '1000' }}>
-        <div id="youtube-player" style={{ width: '100%', height: '100%' }}></div>
-      </div>
-      {/* <div style={{ position: 'fixed', left: '-9999px', top: '-9999px', width: '1px', height: '1px' }}> */}
-      {/*   <div id="youtube-player"></div> */}
-      {/* </div> */}
 
     </>
   );
