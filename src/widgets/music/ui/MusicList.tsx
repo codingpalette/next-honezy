@@ -418,7 +418,7 @@ export function MusicList() {
           </div>
         </div>
       )}
-      <div style={{ position: 'fixed', left: '0', top: '0', width: '150px', height: '150px' }}>
+      <div style={{ position: 'fixed', left: '-9999', top: '-9999', width: '150px', height: '150px' }}>
         <div id="youtube-player" style={{ width: '100%', height: '100%' }}></div>
       </div>
 
