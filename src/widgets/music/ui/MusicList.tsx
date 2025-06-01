@@ -71,13 +71,13 @@ export function MusicList() {
         initializePlayer(music.link, true);
         setTimeout(() => {
           playerRef.current?.playVideo();
-        }, 500)
+        }, 100)
       } else if (playerRef.current) {
         playerRef.current.loadVideoById(extractVideoId(music.link));
         // 사용자 인터랙션 컨텍스트에서 즉시 재생 시도
         setTimeout(() => {
           playerRef.current?.playVideo();
-        }, 500);
+        }, 100);
       }
     }
   };
@@ -147,6 +147,32 @@ export function MusicList() {
     const secs = Math.floor(seconds % 60);
     return `${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
   };
+
+  // 플레이어를 눌렀는데 재생이 안되고 있는 경우 
+  useEffect(() => {
+    if (playerRef.current && playingMusic && playing) {
+      let check = true;
+      let retryCount = 0;
+      const maxRetries = 6; // 최대 3초 동안 시도 (500ms * 6)
+      
+      const timeInterval = setInterval(() => {
+        const currentTime = playerRef.current?.getCurrentTime();
+        
+        if (currentTime === 0 && check && retryCount < maxRetries) {
+          playerRef.current?.playVideo();
+          retryCount++;
+        } else if (currentTime > 0 || retryCount >= maxRetries) {
+          check = false;
+          clearInterval(timeInterval);
+        }
+      }, 500);
+
+      // 컴포넌트 언마운트나 의존성 변경 시 정리
+      return () => {
+        clearInterval(timeInterval);
+      };
+    }
+  }, [playerRef, playingMusic, playing])
 
   return (
     <>
